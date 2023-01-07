@@ -1,0 +1,28 @@
+<p class="text-center">Seleccionar {{selectCodigo.tabla}}</p>
+
+<form name="formCodigo">
+	<div class="row">
+		<div class="form-group col">
+			<label>Código/Nombre</label>
+			<input type="text" class="form-control" ng-model="selectCodigo.texto">
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col">
+			<ul class="list-group">
+				<li class="list-group-item"
+					ng-repeat="item in pdus | filter:criteriaMatch(selectCodigo)"
+					ng-click="setSelectedCodigoDialog(item.codigo, selectCodigo.tabla)">
+					{{ item.nombre }}
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col">
+			<button class="btn btn-danger" ng-click="cancelSelectCodigo()">Cancelar</button>
+		</div>
+	</div>
+	<br/>
+</form>

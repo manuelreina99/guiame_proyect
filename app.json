@@ -1,0 +1,8 @@
+{
+  "name": "Guiame",
+  "description": "Guiame app",
+  "repository": "https://github.com/yosoyoscar/guiame.git",
+  "logo": "http://node-js-sample.herokuapp.com/node.svg",
+  "keywords": ["node", "express", "static", "postgres"],
+  "image": "heroku/nodejs"
+}

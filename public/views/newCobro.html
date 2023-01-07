@@ -1,0 +1,35 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">Cobros/Pagos de {{idsChecked.length}} factura(s)</h3>
+</div>
+<div class="modal-body" id="modal-body">
+	<div class="row">
+		<div class="custom-control custom-switch factura-custom-switch col">
+			<input type="checkbox" class="custom-control-input factura-checkbox" id="switchPagadoHonorariosAgencia" ng-model="cobros.agencia_honorarios_pagado">
+			<label class="custom-control-label" for="switchPagadoHonorariosAgencia">Pagado honorarios por agencia</label>
+			<input type="date" class="form-control" placeholder="Fecha" ng-model="cobros.agencia_honorarios_fecha">
+		</div>
+		<div class="custom-control custom-switch factura-custom-switch col">
+			<input type="checkbox" class="custom-control-input factura-checkbox" id="switchPagadoGastosAgencia" ng-model="cobros.agencia_gastos_pagado">
+			<label class="custom-control-label" for="switchPagadoGastosAgencia">Pagado gastos por agencia</label>
+			<input type="date" class="form-control" placeholder="Fecha" ng-model="cobros.agencia_gastos_fecha">
+		</div>
+		<div class="custom-control custom-switch factura-custom-switch col">
+			<input type="checkbox" class="custom-control-input factura-checkbox" id="switchPagadoHonorariosGuia" ng-model="cobros.guia_honorarios_pagado">
+			<label class="custom-control-label" for="switchPagadoHonorariosGuia">Pagado honorarios guía</label>
+			<input type="date" class="form-control" placeholder="Fecha" ng-model="cobros.guia_honorarios_fecha">
+		</div>
+		<div class="custom-control custom-switch factura-custom-switch col">
+			<input type="checkbox" class="custom-control-input factura-checkbox" id="switchPagadoGastosGuia" ng-model="cobros.guia_gastos_pagado">
+			<label class="custom-control-label" for="switchPagadoGastosGuia">Pagado gastos guía</label>
+			<input type="date" class="form-control" placeholder="Fecha" ng-model="cobros.guia_gastos_fecha">
+		</div>
+	</div>
+	<div class="row" style="margin-top: 20px; margin-bottom: 20px;">
+		<div class="col">
+			<button class="btn btn-danger" ng-click="cancelCobro()">Cancelar</button>
+		</div>
+		<div class="col">
+			<button class="btn btn-primary float-right" ng-click="doCobro()">Cobrar/Pagar</button>
+		</div>
+	</div>
+</div>

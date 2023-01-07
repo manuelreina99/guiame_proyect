@@ -1,0 +1,35 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title" ng-if="!newLinea.isgasto">Nueva Línea de Factura</h3>
+    <h3 class="modal-title" id="modal-title" ng-if="newLinea.isgasto">Nueva Línea de Gasto</h3>
+</div>
+<div class="modal-body" id="modal-body">
+	<div class="row">
+		<div class="form-group col">
+			<label>Descripción</label>
+			<input type="text" class="form-control" placeholder="Descripción" ng-model="newLinea.descripcion">
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col">
+			<label>Cantidad</label>
+			<input type="number" class="form-control" placeholder="Cantidad" ng-model="newLinea.cantidad" ng-change="newLinea.total = newLinea.cantidad * newLinea.precio">
+		</div>
+		<div class="form-group col">
+			<label>Precio</label>
+			<input type="number" class="form-control" placeholder="Precio" ng-model="newLinea.precio" ng-change="newLinea.total = newLinea.cantidad * newLinea.precio">
+		</div>
+		<div class="form-group col">
+			<label>Total</label>
+			<input type="number" class="form-control" placeholder="Total" ng-model="newLinea.total" disabled>
+		</div>
+	</div>
+	<hr/>
+	<div class="row">
+		<div class="col">
+			<button class="btn btn-danger" type="button" ng-click="cancelNL()">CANCELAR</button>
+		</div>
+		<div class="col">
+			<button class="btn btn-primary float-right" type="button" ng-click="okNL()">ACEPTAR</button>
+		</div>
+	</div>
+</div>

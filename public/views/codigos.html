@@ -1,0 +1,179 @@
+<!-- Header con información básica -->
+<nav class="navbar pb-0 bg-white">
+	<span class="h4">
+		{{title}} {{selectedTabla.descripcion | uppercase}}
+		<span class="spinner-border spinner-border-sm" ng-if="loading.progress" style="vertical-align: unset;"></span>
+		<span class="badge badge-pill badge-success" ng-if="loading.ok" style="padding: .05em .2em;">
+			<i class="material-icons" style="font-size: 12px;">done</i>
+		</span>
+	</span>
+</nav>
+
+<div class="container-fluid" style="margin-top: 20px;">
+	<div class="list-group">
+		<button type="button" class="list-group-item list-group-item-action"
+				ng-repeat="tabla in tablas"
+				ng-if="!selectedCodigo"
+				ng-click="updateCodigos(tabla)">
+			<i class="material-icons" style="vertical-align: bottom;">{{tabla.icon}}</i> {{tabla.descripcion}}
+		</button>
+	</div>
+</div>
+
+<div class="container-fluid" style="margin-top: 20px;">
+	<div class="row">
+		<div class="col">
+			<select class="custom-select" ng-if="selectedTabla" ng-model="selectedCodigo" ng-change="updateSelectedCodigo(selectedCodigo)">
+				<option ng-repeat="codigo in codigos | orderBy:'codigo'" ng-value="codigo">{{codigo.codigo}}-{{codigo.nombre}}</option>
+			</select>
+
+			<div class="alert alert-danger alert-dismissible fade show" role="alert" ng-if="error.isError">
+			  {{ error.text }}
+			</div>
+
+			<form ng-show="selectedCodigo" name="currentForm.formCodigo" class="angularForm">
+				<div class="row">
+					<div class="form-group col-3">
+						<label>Codigo</label>
+						<input  type="text" class="form-control" ng-model="selectedCodigo.codigo" name="formCodigoCodigo"
+								ng-disabled="selectedCodigo.idpdu > 0" ng-change="checkCodigo(currentForm.formCodigo)" minlength="2" required>
+					</div>
+					<div class="form-group col-9">
+						<label>Nombre</label>
+						<input type="text" class="form-control" ng-model="selectedCodigo.nombre" required>
+					</div>
+				</div>
+				<div class="row" ng-if="selectedTablaCampos > 1">
+					<div class="form-group col-12 col-md-6">
+						<label>Direccion</label>
+						<input type="text" class="form-control" ng-model="selectedCodigo.direccion">
+					</div>
+					<div class="form-group col-12 col-md-6">
+						<label>Localidad</label>
+						<input type="text" class="form-control" ng-model="selectedCodigo.localidad">
+					</div>
+				</div>
+				<div class="row" ng-if="selectedTablaCampos > 1">
+					<div class="form-group col-6 col-md-3">
+						<label>Código Postal</label>
+						<input type="text" class="form-control" ng-model="selectedCodigo.codigopostal">
+					</div>
+					<div class="form-group col-6 col-md-3">
+						<label>Provincia</label>
+						<select class="form-control" ng-model="selectedCodigo.provincia">
+							<option ng-repeat="item in pdus  | filter:'provincia'" value="{{item.codigo}}" ng-selected="{{item.codigo == selectedCodigo.provincia}}">{{item.nombre}}</option>
+						</select>
+					</div>
+					<div class="form-group col-12 col-md-6">
+						<label>País</label>
+						<input type="text" class="form-control" ng-model="selectedCodigo.pais">
+					</div>
+				</div>
+				<div class="row" ng-if="selectedTablaCampos > 1">
+					<div class="form-group col-12 col-md-4">
+						<label>Teléfono 1</label>
+						<input type="text" class="form-control" ng-model="selectedCodigo.tel1">
+					</div>
+					<div class="form-group col-12 col-md-4">
+						<label>Teléfono 2</label>
+						<input type="text" class="form-control" ng-model="selectedCodigo.tel2">
+					</div>
+					<div class="form-group col-12 col-md-4">
+						<label>Fax</label>
+						<input type="text" class="form-control" ng-model="selectedCodigo.fax">
+					</div>
+				</div>
+				<div class="row" ng-if="selectedTablaCampos > 1">
+					<div class="form-group col-12 col-md-3">
+						<label>NIF</label>
+						<input type="text" class="form-control" ng-model="selectedCodigo.identificacion">
+					</div>
+					<div class="form-group col-12 col-md-9">
+						<label>Email</label>
+						<input type="email" class="form-control" ng-model="selectedCodigo.email">
+					</div>
+				</div>
+				<div class="row" ng-if="selectedTablaCampos > 2">
+					<div class="form-group col-6 col-md-4">
+						<label>Tarifa <i class="material-icons" style="font-size: 20px; vertical-align: middle; cursor: pointer;" ng-click="goToTarifa(selectedCodigo.tarifa)">moving</i></label>
+						<select class="form-control" ng-model="selectedCodigo.tarifa">
+							<option ng-repeat="item in pdus  | filter:'tarifa'" value="{{item.codigo}}" ng-selected="{{item.codigo == selectedCodigo.tarifa}}">{{item.nombre}}</option>
+						</select>
+					</div>
+					<div class="form-group col-6 col-md-4">
+						<label>% Descuento</label>
+						<input type="number" class="form-control" ng-model="selectedCodigo.descuento">
+					</div>
+					<div class="form-group col-6 col-md-4">
+						<label>% Dcto {{currentUser.empresa.nombre | uppercase}}</label>
+						<input type="number" class="form-control" ng-model="selectedCodigo.descuentoita">
+					</div>
+					<div class="form-group col-6 col-md-5">
+						<label>Forma de Pago</label>
+						<select class="form-control" ng-model="selectedCodigo.formapago">
+							<option ng-repeat="item in pdus  | filter:'formapago'" value="{{item.codigo}}" ng-selected="{{item.codigo == selectedCodigo.formapago}}">{{item.nombre}}</option>
+						</select>
+					</div>
+					<div class="form-group col-6 col-md-5">
+						<label>Tipo de Factura</label>
+						<select class="form-control" ng-model="selectedCodigo.tipofactura">
+							<option ng-repeat="item in pdus  | filter:'tipofactura'" value="{{item.codigo}}" ng-selected="{{item.codigo == selectedCodigo.tipofactura}}">{{item.nombre}}</option>
+						</select>
+					</div>
+					<div class="custom-control custom-switch col-6 col-md-2">
+						<input type="checkbox" class="custom-control-input" id="factpormatriz" ng-model="selectedCodigo.factpormatriz">
+						<label class="custom-control-label" for="factpormatriz">
+							Fact. por {{currentUser.empresa.nombre | uppercase}}
+						</label>
+						<span class="badge badge-pill badge-warning" style="cursor: pointer;" ng-click="alert('Indica si las facturas emitidas por el guía a esta agencia se facturan a través de la empresa o directamente a la agencia')">?</span>
+					</div>
+				</div>
+				<div class="row" ng-if="selectedTabla.tabla != 'guia'">
+					<div class="form-group col">
+						<label>Observaciones</label>
+						<textarea class="form-control" rows="3" ng-model="selectedCodigo.observaciones"></textarea>
+					</div>
+				</div>
+				<div class="row" ng-if="selectedTabla.tabla == 'guia'">
+					<div class="form-group col-12 col-md-6">
+						<label>Idiomas {{ selectedCodigo.idiomas.toString() }}</label>
+						<select multiple class="form-control" ng-model="selectedCodigo.idiomas">
+							<option ng-repeat="item in pdus  | filter:'idioma'" value="{{item.codigo}}" ng-selected="{{item.codigo == selectedCodigo.idiomas}}">{{item.nombre}}</option>
+						</select>
+					</div>
+					<div class="form-group col-6 col-md-3">
+						<label>% IRPF</label>
+						<input type="number" class="form-control" ng-model="selectedCodigo.irpf">
+					</div>
+					<div class="custom-control custom-switch grupo-custom-switch col-6 col-md-3">
+						<input type="checkbox" class="custom-control-input" id="fijo" ng-model="selectedCodigo.fijo">
+						<label class="custom-control-label float-right" for="fijo">Guía Fijo</label>
+					</div>
+					<div class="form-group col">
+						<label>Observaciones</label>
+						<textarea class="form-control" rows="3" ng-model="selectedCodigo.observaciones"></textarea>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+</div>
+
+<p class="mt-4">&nbsp;</p>
+
+<!-- Footer con botones -->
+<nav class="navbar navbar-mobile fixed-bottom d-flex justify-content-around justify-content-md-end">
+	<div class="btn-toobar d-none d-md-block" role="group">
+		<button class="btn btn-outline-light text-white" type="button" title="Atrás"  ng-if="selectedCodigo" ng-click="updateCodigos(null)"    ng-disabled="!selectedCodigo"><i class="material-icons mi-vam">arrow_back</i> Atrás</button>
+		<button class="btn btn-outline-light text-white" type="button" title="Borrar" ng-if="selectedCodigo" ng-click="deletePdu(true)"    ng-disabled="!selectedCodigo || selectedCodigo.idpdu == 0"><i class="material-icons mi-vam">delete</i> Borrar</button>
+		<button class="btn btn-outline-light text-white" type="button" title="Nuevo"  ng-if="selectedTabla"  ng-click="newPdu()"           ng-disabled="!selectedTabla"><i class="material-icons mi-vam">add</i> Nuevo</button>
+		<button class="btn btn-outline-light text-white" type="button" title="Guardar" ng-if="selectedCodigo" ng-click="upsertCodigo(true)" ng-disabled="!selectedCodigo || currentForm.formCodigo.$invalid"><i class="material-icons mi-vam">save</i> Guardar</button>
+	</div>
+	<div class="btn-toobar d-md-none" role="group">
+		<button class="btn text-white" type="button" title="Atrás"  ng-if="selectedCodigo" ng-click="updateCodigos(null)" ng-disabled="!selectedCodigo"><i class="material-icons">arrow_back</i></button>
+		<button class="btn text-white" type="button" title="Borrar" ng-if="selectedCodigo" ng-click="deletePdu(true)"    ng-disabled="!selectedCodigo || selectedCodigo.idpdu == 0"><i class="material-icons">delete</i></button>
+		<button class="btn text-white" type="button" title="Nuevo"  ng-if="selectedTabla" ng-click="newPdu()"           ng-disabled="!selectedTabla"><i class="material-icons">add</i></button>
+		<button class="btn text-white" type="button" title="Guardar" ng-if="selectedCodigo" ng-click="upsertCodigo(true)" ng-disabled="!selectedCodigo || currentForm.formCodigo.$invalid"><i class="material-icons">save</i></button>
+	</div>
+</nav>

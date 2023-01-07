@@ -1,0 +1,147 @@
+<!-- Header con información básica -->
+<nav class="navbar pb-0 bg-white">
+	<span class="h4">
+		{{title}}
+		<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" ng-if="loading.progress" style="vertical-align: unset;"></span>
+		<span class="badge badge-pill badge-success" ng-if="loading.ok" style="padding: .05em .2em;"><i class="material-icons" style="font-size: 12px;">done</i></span>
+	</span>
+	<img ng-src="./images/users/{{currentUser.idprofilepicture}}.jpg"
+		 class="float-right pb-1"
+		 width="100"
+		 alt='{{currentUser.username}}'
+		 style="border-radius: 20px;">
+</nav>
+
+<div class="card">
+    <div class="card-header">
+      <h2 class="mb-0">
+          <span class="h5">Mis Datos</span><br/>
+      </h2>
+    </div>
+	<div class="card-body">
+		<form>
+			<div class="row">
+				<div class="form-group col-xs-12 col-md-6">
+					<label>Nombre</label>
+					<input type="text" class="form-control" ng-model="misDatos.nombrecompleto" minlength="6" required>
+					<small class="form-text text-muted">Mínimo 6 caracteres.</small>
+				</div>
+				<div class="form-group col-xs-12 col-md-6">
+					<label>Email</label>
+					<input type="email" class="form-control" ng-model="misDatos.email" minlength="6" required>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-xs-12 col-md-6">
+				</div>
+				<div class="form-group col-xs-12 col-md-6">
+					<label>Observaciones por defecto en nuevas facturas</label>
+					<input type="text" class="form-control" ng-model="misDatos.facturadefaulttext">
+				</div>
+			</div>
+			<button type="submit" class="btn btn-primary float-right" ng-click="updateUserDatos()">
+				<i class="material-icons mi-vam">save</i> Actualizar Mis Datos
+			</button>
+		</form>
+	</div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+      <h2 class="mb-0">
+          <span class="h5">Cambiar contraseña</span><br/>
+      </h2>
+    </div>
+	<div class="card-body">
+		<form>
+		<div class="form-group">
+		<label>Nueva Contraseña</label>
+		<input type="password" class="form-control col-12 col-md-4" ng-model="newPassword.pass1" minlength="6">
+		<small class="form-text text-muted">Mínimo 6 caracteres.</small>
+		</div>
+		<div class="form-group">
+		<label>Repite Contraseña</label>
+		<input type="password" class="form-control  col-12 col-md-4" ng-model="newPassword.pass2" minlength="6">
+		<small class="form-text text-danger" ng-if="newPassword.pass1 != newPassword.pass2">Ambas contraseñas deben coincidir.</small>
+		</div>
+		<button type="submit" class="btn btn-primary" ng-click="changePass()" ng-disabled="!newPassword || !newPassword.pass1 || newPassword.pass1.length < 6 || newPassword.pass1 != newPassword.pass2">Cambiar contraseña</button>
+		</form>
+	</div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+      <h2 class="mb-0">
+          <span class="h5">Notificaciones</span><br/>
+      </h2>
+    </div>
+	<div class="card-body">
+		<div ng-if="supportsNotifications && supportsSW">
+			<div class="pb-1">Aquí puedes suscribirte (o no) a las notificaciones de la aplicación</div>
+			<button type="button" class="btn btn-primary" ng-click="subscribeToPush()">Suscríbeme en este dispositivo</button>
+			<button type="button" class="btn btn-secondary" ng-click="unsubscribeToPush()">No más notificaciones</button>
+		</div>
+		<div ng-if="!supportsNotifications || !supportsSW">
+			<span>Tu dispositivo no soporta Notificaciones</span><br/>
+		</div>
+	</div>
+</div>
+
+<div class="accordion" id="accordioninfoDispositivo">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="mb-0">
+        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#infoDispositivo" style="text-decoration: none; color: black; padding-left: 0px;">
+          <span class="h5">Detalles Dispositivo <i class="material-icons mi-vam float-right">expand_more</i></span><br/>
+        </button>
+      </h2>
+    </div>
+    <div id="infoDispositivo" class="collapse" data-parent="#accordioninfoDispositivo">
+      <div class="card-body">
+		<span>Soporta Notificaciones: {{supportsNotifications}}</span><br/>
+		<span>Soporta Service Workers: {{supportsSW}}</span><br/>
+		<span>Console: {{miperfil.console}}</span><br/>
+		<span>idusuario: {{ currentUser.id }}</span><br/>
+		<span>idultimaempresa: {{ currentUser.empresa.id }}</span><br/>
+		<span>idprofilepicture: {{ currentUser.idprofilepicture }}</span><br/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="accordion" id="accordionEmpresas" ng-if="empresas.length > 1">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="mb-0">
+        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#empresas" style="text-decoration: none; color: black; padding-left: 0px;">
+          <span class="h5">Empresas <i class="material-icons mi-vam float-right">expand_more</i></span><br/>
+        </button>
+      </h2>
+    </div>
+    <div id="empresas" class="collapse" data-parent="#accordionEmpresas">
+      <div class="card-body">
+			<ul class="list-group">
+				<button type="button" class="list-group-item list-group-item-action"
+								ng-repeat="empresa in empresas"
+								ng-click="setEmpresa(empresa.idempresa)"
+								ng-disabled="!empresa.status">
+					<img ng-src="./images/{{empresa.idprofilepicture}}.png" alt='logo' width="32" style="border-radius: 20px; margin-top: -5px;"> {{empresa.nombrecompleto | uppercase}}
+					<span ng-if="!empresa.status" class="badge badge-pill badge-danger">DESACTIVADA</span>
+				</button>
+			</ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="mt-4">&nbsp;</p>
+
+<!-- Footer con botones -->
+<nav class="navbar navbar-mobile fixed-bottom d-flex justify-content-around justify-content-md-end">
+	<div class="btn-toobar d-none d-md-block" role="group">
+		<button class="btn" type="button"></button>
+	</div>
+	<div class="btn-toobar d-md-none" role="group">
+		<button class="btn" type="button"></button>
+	</div>
+</nav>

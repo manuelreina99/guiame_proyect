@@ -1,0 +1,204 @@
+<nav class="navbar navbar-mobile fixed-top navbar-expand-lg" ng-if="loggedIn">
+    <a ui-sref="app.grupos" class="navbar-brand">
+    <img ng-src="./images/{{currentUser.empresa.idprofilepicture}}.png" alt='logo' width="32" style="border-radius: 20px; margin-top: -5px;"> {{currentUser.empresa.nombre | uppercase}}
+  </a>
+  <a class="nav-link d-md-none text-white" ui-sref="app.reservaguias"><i class="material-icons">group_add</i></a>
+  <a class="nav-link d-md-none text-white" ui-sref="app.facturas"><i class="material-icons">receipt_long</i></a>
+  <a class="nav-link d-md-none text-white" ui-sref="app.miperfil">
+    <img ng-src="./images/users/{{currentUser.idprofilepicture}}.jpg"
+         alt='{{currentUser.username}}' width="32" style="border-radius: 20px; margin-top: -5px; margin-right: 5px;">
+  </a>
+
+  <button class="navbar-toggler" type="button" data-toggle="offcanvas">
+    <i class="material-icons text-white">menu</i>
+  </button>
+
+  <div class="collapse navbar-collapse d-none d-md-block">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" ng-class="{'active' : active == 'Grupos'}">
+        <a class="nav-link" ui-sref="app.grupos">Grupos</a>
+      </li>
+      <li class="nav-item" ng-class="{'active' : active == 'ReservaGuias'}">
+        <a class="nav-link" ui-sref="app.reservaguias">Reserva de Guías</a>
+      </li>
+      <li class="nav-item" ng-class="{'active' : active == 'ReservaGrupos'}">
+        <a class="nav-link" ui-sref="app.reservagrupos">Reserva de Grupos</a>
+      </li>
+      <li class="nav-item" ng-class="{'active' : active == 'Facturas'}">
+        <a class="nav-link" ui-sref="app.facturas">Facturas</a>
+      </li>
+      <li class="nav-item" ng-class="{'active' : active == 'Gastos'}">
+        <a class="nav-link" ui-sref="app.gastos({escompra: true})">Gastos</a>
+      </li>
+      <li class="nav-item dropdown" ng-class="{'active' : active == 'Opciones'}">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
+          Configuración
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" ui-sref="app.codigos">Códigos</a>
+          <a class="dropdown-item" ui-sref="app.fechas({esfestivo:true})">Festivos</a>
+          <a class="dropdown-item" ui-sref="app.tarifas">Tarifas</a>
+          <a class="dropdown-item" ui-sref="app.monumentos">Monumentos</a>
+          <a class="dropdown-item" ui-sref="app.guardias">Guardias</a>
+          <a class="dropdown-item" ui-sref="app.fechas({esfestivo:false})">Incidencias</a>
+          <a class="dropdown-item" ui-sref="app.estadisticas">Estadísticas</a>
+          <!--<a class="dropdown-item" ui-sref="app.apuntes" ng-if="currentUser.username == 'edu' || currentUser.rol >= 9">Apuntes</a>-->
+          <a class="dropdown-item" ui-sref="app.apuntes" ng-if="currentUser.rol >= 9">Apuntes</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" ng-click="logOut(true)" style="cursor: pointer;">Logout</a>
+      </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right text-white" ui-sref="app.miperfil" style="cursor: pointer;">
+      <img ng-src="./images/users/{{currentUser.idprofilepicture}}.jpg"
+           alt='{{currentUser.username}}' width="32" style="border-radius: 20px; margin-top: -5px; margin-right: 5px;">
+           {{currentUser.username | uppercase}}
+    </ul>
+  </div>
+
+  <div class="d-md-none">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent" data-toggle="collapse" data-target="#navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" ng-class="{'active' : active == 'Grupos'}">
+        <a class="nav-link" ui-sref="app.grupos">Grupos</a>
+      </li>
+      <li class="nav-item" ng-class="{'active' : active == 'ReservaGuias'}">
+        <a class="nav-link" ui-sref="app.reservaguias">Reserva de Guías</a>
+      </li>
+      <li class="nav-item" ng-class="{'active' : active == 'ReservaGrupos'}">
+        <a class="nav-link" ui-sref="app.reservagrupos">Reserva de Grupos</a>
+      </li>
+      <li class="nav-item" ng-class="{'active' : active == 'Facturas'}">
+        <a class="nav-link" ui-sref="app.facturas">Facturas</a>
+      </li>
+      <li class="nav-item" ng-class="{'active' : active == 'Gastos'}">
+        <a class="nav-link" ui-sref="app.gastos({escompra: true})">Gastos</a>
+      </li>
+      <li class="nav-item dropdown" ng-class="{'active' : active == 'Opciones'}">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
+          Configuración
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" ui-sref="app.codigos">Códigos</a>
+          <a class="dropdown-item" ui-sref="app.fechas({esfestivo:true})">Festivos</a>
+          <a class="dropdown-item" ui-sref="app.tarifas">Tarifas</a>
+          <a class="dropdown-item" ui-sref="app.monumentos">Monumentos</a>
+          <a class="dropdown-item" ui-sref="app.guardias">Guardias</a>
+          <a class="dropdown-item" ui-sref="app.fechas({esfestivo:false})">Incidencias</a>
+          <a class="dropdown-item" ui-sref="app.estadisticas">Estadísticas</a>
+          <a class="dropdown-item" ui-sref="app.apuntes" ng-if="currentUser.username == 'edu' || currentUser.rol >= 9">Apuntes</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" ng-click="logOut(true)" style="cursor: pointer;">Logout</a>
+      </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right text-white" ui-sref="app.miperfil" style="cursor: pointer;">
+      <img ng-src="./images/users/{{currentUser.idprofilepicture}}.jpg"
+           alt='{{currentUser.username}}' width="32" style="border-radius: 20px; margin-top: -5px; margin-right: 5px;">
+           {{currentUser.username | uppercase}}
+    </ul>
+  </div>
+  </div>
+</nav>
+
+
+<div class="navbar-collapse offcanvas-collapse" style="z-index: 99999;" data-toggle="offcanvas">
+  <ul class="navbar-nav mr-auto">
+    <li class="nav-item offcanvas-menu-item">
+      <a class="nav-link text-white text-center" ui-sref="app.grupos">Grupos</a>
+    </li>
+    <li class="nav-item offcanvas-menu-item">
+      <a class="nav-link text-white text-center" ui-sref="app.reservaguias">Reserva de Guías</a>
+    </li>
+    <li class="nav-item offcanvas-menu-item">
+      <a class="nav-link text-white text-center" ui-sref="app.reservagrupos">Reserva de Grupos</a>
+    </li>
+    <li class="nav-item offcanvas-menu-item">
+      <a class="nav-link text-white text-center" ui-sref="app.facturas">Facturas</a>
+    </li>
+    <li class="nav-item offcanvas-menu-item">
+      <a class="nav-link text-white text-center" ui-sref="app.gastos({escompra: true})">Gastos</a>
+    </li>
+    <li class="nav-item offcanvas-menu-item">
+      <a class="nav-link text-white text-center" ui-sref="app.codigos">Códigos</a>
+    </li>
+    <li class="nav-item offcanvas-menu-item">
+      <a class="nav-link text-white text-center" ui-sref="app.fechas({esfestivo:true})">Festivos</a>
+    </li>
+    <li class="nav-item offcanvas-menu-item">
+      <a class="nav-link text-white text-center" ui-sref="app.tarifas">Tarifas</a>
+    </li>
+    <li class="nav-item offcanvas-menu-item">
+      <a class="nav-link text-white text-center" ui-sref="app.monumentos">Monumentos</a>
+    </li>
+    <li class="nav-item offcanvas-menu-item">
+      <a class="nav-link text-white text-center" ui-sref="app.guardias">Guardias</a>
+    </li>
+    <li class="nav-item offcanvas-menu-item">
+      <a class="nav-link text-white text-center" ui-sref="app.fechas({esfestivo:false})">Incidencias</a>
+    </li>
+    <li class="nav-item offcanvas-menu-item">
+      <a class="nav-link text-white text-center" ui-sref="app.estadisticas">Estadísticas</a>
+    </li>
+    <li class="nav-item offcanvas-menu-item" ng-if="currentUser.username == 'edu' || currentUser.rol >= 9">
+      <a class="nav-link text-white text-center" ui-sref="app.apuntes">Apuntes</a>
+    </li>
+    <li class="nav-item offcanvas-menu-item" style="margin-bottom: 2em;">
+      <a class="nav-link text-white text-center" ng-click="logOut(true)" style="cursor: pointer;">Logout</a>
+    </li>
+  </ul>
+</div>
+
+
+<style type="text/css">
+
+.offcanvas-collapse {
+  position: fixed;
+  top: 60px; /* Height of navbar */
+  bottom: 0;
+  right: 100%;
+  left:-300px;
+  width: 100%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  overflow-y: auto;
+  visibility: hidden;
+  background-color: #1b1b37;
+  transition-timing-function: ease-in-out;
+  transition-duration: .3s;
+  transition-property: left, visibility;
+}
+
+.offcanvas-collapse {
+  align-items:start;
+  /*   Adds a subtle drop shadow   */
+  -moz-background-clip: padding;     /* Firefox 3.6 */
+  -webkit-background-clip: padding;  /* Safari 4? Chrome 6? */
+  background-clip: padding-box;      /* Firefox 4, Safari 5, Opera 10, IE 9 */
+  border-right:0px solid rgba(0, 0, 0, 0.2);
+}
+
+/* Makes the nav visibile with the open class */
+.offcanvas-collapse.open {
+  left: 0;
+  visibility: visible;
+}
+
+.offcanvas-menu-item{
+  border-bottom: 1px solid;
+  color: white;
+  padding: 0.5em;
+}
+
+</style>
+
+<script type="text/javascript">
+  $(document).ready(
+    function() {
+      $('[data-toggle="offcanvas"], #navToggle').on('click', function () {
+      $('.offcanvas-collapse').toggleClass('open')
+    })
+  });
+</script>

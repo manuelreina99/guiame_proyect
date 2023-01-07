@@ -1,0 +1,325 @@
+<!-- Header con información básica -->
+<nav class="navbar pb-0 bg-white">
+	<span ng-if="factura.numero" class="h4">{{title}} {{factura.numero}}/{{factura.fecha | date : 'yy' }} <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" ng-if="loading || rsLoading" style="vertical-align: unset;"></span></span>
+    <span ng-if="!factura.numero" class="h4">
+		<span ng-if="!escompra">NUEVA</span>
+		<span ng-if="escompra">NUEVO</span>
+		{{title}} <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" ng-if="loading" style="vertical-align: unset;"></span>
+    </span>
+</nav>
+
+<div class="alert alert-danger alert-dismissible fade show" role="alert" ng-if="formFactura.$invalid && formFactura.$dirty">
+  Por favor, revisa los siguientes datos: <span ng-repeat="item in formFactura.$error.required">{{item.$name}} </span>
+</div>
+
+<form name="formFactura" class="angularForm" ng-pristine="formDirty">
+	<div class="row">
+		<div class="form-group col-12 col-md-6">
+			<!-- Datos generales de la factura e identificación emisor -->
+			<div class="row">
+				<div class="form-group col-3 col-md-2">
+					<label>Tipo</label>
+					<select class="form-control" name="tipo" ng-model="factura.tipofactura" ng-change="getNextNum()" required>
+						<option ng-repeat="item in pdus | filter:'tipofactura'" value="{{item.codigo}}" ng-selected="{{item.codigo == factura.tipofactura}}">{{item.nombre}}</option>
+					</select>
+				</div>
+				<div class="form-group col-3 col-md-2">
+					<label>Número</label>
+					<input type="integer" class="form-control" placeholder="Número" name="numero" ng-model="factura.numero" required>
+				</div>
+				<div class="form-group col-6 col-md-4">
+					<label>Fecha</label>
+					<input type="date" class="form-control" placeholder="Fecha" ng-model="factura.fecha">
+				</div>
+				<div class="form-group col-12 col-md-4">
+					<label ng-if="!escompra">Referencia</label>
+					<label ng-if="escompra">Factura Origen</label>
+					<input type="text" class="form-control" placeholder="Referencia" ng-model="factura.referencia">
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-12 col-md">
+					<label ng-if="!escompra">Emisor</label>
+					<select ng-if="!escompra" class="form-control" name="idusuarioemisor" ng-model="factura.idusuarioemisor" disabled>
+						<option ng-repeat="item in pdus | filter:'emisor'" value="{{item.codigo}}" ng-selected="{{item.codigo == factura.idusuarioemisor}}">{{item.nombre}}</option>
+					</select>
+				</div>
+				<div class="form-group col-6 col-md">
+					<label>% Iva</label>
+					<input type="number" class="form-control" placeholder="% Iva" ng-model="factura.porciva" ng-change="updateTotales()">
+				</div>
+				<div class="form-group col-6 col-md">
+					<label>% Retención</label>
+					<input type="number" class="form-control" placeholder="% Retención" ng-model="factura.porcretencion" ng-change="updateTotales()">
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col">
+					<label>Observaciones</label>
+					<textarea class="form-control" rows="3" ng-model="factura.observaciones"></textarea>
+				</div>
+			</div>
+		</div>
+		<div class="form-group col-12 col-md-6">
+			<!-- Datos receptor -->
+			<div class="row" ng-if="escompra">
+				<div class="form-group col-12">
+					<label>Emisor  <span class="ml-3" style="cursor: pointer;" ng-click="showNewCodigoDialog('proveedor')">+</span></label>
+					<select class="form-control" name="emisorgasto" ng-model="factura.emisorgasto" ng-change="loadDatosProveedor()">
+						<option ng-repeat="item in pdus | filter:'proveedor'" value="{{item.codigo}}" ng-selected="{{item.codigo == factura.emisorgasto}}">{{item.nombre}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-4">
+					<label>Identificación</label>
+					<input type="text" class="form-control" placeholder="Identificación" ng-model="factura.identificacion">
+				</div>
+				<div class="form-group col-8">
+					<label>Nombre</label>
+					<input type="text" class="form-control" placeholder="Nombre" ng-model="factura.nombre">
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col">
+					<label>Dirección</label>
+					<input type="text" class="form-control" placeholder="Dirección" ng-model="factura.direccion">
+				</div>
+				<div class="form-group col">
+					<label>Población</label>
+					<input type="text" class="form-control" placeholder="Población" ng-model="factura.poblacion">
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col">
+					<label>Provincia</label>
+					<select class="form-control" ng-model="factura.provincia">
+						<option ng-repeat="item in pdus  | filter:'provincia'" value="{{item.codigo}}" ng-selected="{{item.codigo == factura.provincia}}">{{item.nombre}}</option>
+					</select>
+				</div>
+				<div class="form-group col">
+					<label>Código Postal</label>
+					<input type="text" class="form-control" placeholder="Código Postal" ng-model="factura.codigopostal">
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col">
+					<label>Email</label>
+					<input type="email" class="form-control" placeholder="Email" ng-model="factura.recipient">
+				</div>
+				<div class="form-group col">
+					<label>País</label>
+					<input type="text" class="form-control" placeholder="País" ng-model="factura.pais">
+				</div>
+			</div>
+		</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col">
+			<div class="alert alert-secondary text-center" role="alert">
+				LÍNEAS
+				<i class="material-icons float-right boton-factura ml-2 mr-0"              ng-click="openModal(false)" title="Nueva Línea Libre">playlist_add</i>
+				<i class="material-icons float-right boton-factura ml-2" ng-if="!escompra" ng-click="addNewLinea('idioma')" title="Nueva Línea Idioma">flag</i>
+				<i class="material-icons float-right boton-factura ml-2" ng-if="!escompra" ng-click="addNewLinea('monumento')" title="Nueva Línea Monumento">location_city</i>
+				<i class="material-icons float-right boton-factura"      ng-if="!escompra" ng-click="addNewLinea('hora')" title="Nueva Línea Hora">alarm_add</i>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" ng-repeat="linea in factura.lineas | filter : {isgasto:false}">
+		<div class="form-group col-12 col-md-6">
+			<label ng-if="$index==0">Descripción</label>
+			<input type="integer" class="form-control" placeholder="Descripción" ng-model="linea.descripcion">
+		</div>
+		<div class="form-group col-3 col-md-2">
+			<label ng-if="$index==0">Cantidad</label>
+			<input type="number" class="form-control" placeholder="Cantidad" ng-model="linea.cantidad" ng-change="updateTotales()">
+		</div>
+		<div class="form-group col-4 col-md-2">
+			<label ng-if="$index==0">Precio</label>
+			<input type="number" class="form-control" placeholder="Precio" ng-model="linea.precio" ng-change="updateTotales()">
+		</div>
+
+		<div class="col-5 col-md-2">
+			<label ng-if="$index==0">Total</label>
+			<div class="input-group">
+				<input type="number" class="form-control" placeholder="Total" ng-value="linea.total" disabled>
+				<div class="input-group-append" ng-click="" style="cursor: pointer;"  >
+					<span class="input-group-text"><i class="material-icons" ng-click="deleteLinea(linea)">delete</i></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col">
+			<hr/>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-6 col-md-2 offset-md-8">
+			<p class="text-right font-weight-bold">Base:</p>
+		</div>
+		<div class="col-6 col-md-2">
+			<p class="text-right font-weight-bold text-monospace">{{ factura.base | currency }}</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-6 col-md-2 offset-md-8">
+			<p class="text-right font-weight-bold">Iva:</p>
+		</div>
+		<div class="col-6 col-md-2">
+			<p class="text-right font-weight-bold text-monospace">{{ factura.totaliva | currency }}</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-6 col-md-2 offset-md-8">
+			<p class="text-right font-weight-bold">Retención:</p>
+		</div>
+		<div class="col-6 col-md-2">
+			<p class="text-right font-weight-bold text-monospace">{{ factura.totalretencion | currency }}</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-6 col-md-2 offset-md-8">
+			<p class="text-right font-weight-bold">Total:</p>
+		</div>
+		<div class="col-6 col-md-2" ng-if="factura.contLineasNoGastos != 1">
+			<p class="text-right font-weight-bold text-monospace">{{ factura.total | currency }}</p>
+		</div>
+		<div class="col-6 col-md-2" ng-if="factura.contLineasNoGastos == 1">
+			<input type="number" class="form-control" placeholder="Precio" ng-model="factura.total" ng-change="updatePrecioLinea()">
+		</div>
+	</div>
+
+	<div class="row" ng-if="!escompra" style="margin-top: 10px;">
+		<div class="col">
+			<div class="alert alert-secondary text-center" role="alert">
+				GASTOS
+				<button class="btn btn-success float-right" style="margin-top: -6px;" ng-click="openModal(true)">+</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" ng-repeat="linea in factura.lineas | filter : {isgasto:true}" ng-if="!escompra">
+		<div class="form-group col-12 col-md-6">
+			<label ng-if="$index==0">Descripción</label>
+			<input type="integer" class="form-control" placeholder="Descripción" ng-model="linea.descripcion">
+		</div>
+		<div class="form-group col-3 col-md-2">
+			<label ng-if="$index==0">Cantidad</label>
+			<input type="number" class="form-control" placeholder="Cantidad" ng-model="linea.cantidad" ng-change="updateTotales()">
+		</div>
+		<div class="form-group col-4 col-md-2">
+			<label ng-if="$index==0">Precio</label>
+			<input type="number" class="form-control" placeholder="Precio" ng-model="linea.precio" ng-change="updateTotales()">
+		</div>
+		<div class="col-5 col-md-2">
+			<label ng-if="$index==0">Total</label>
+			<div class="input-group">
+				<input type="number" class="form-control" placeholder="Total" ng-value="linea.total" disabled>
+				<div class="input-group-append" ng-click="" style="cursor: pointer;"  >
+					<span class="input-group-text"><i class="material-icons" ng-click="deleteLinea(linea)">delete</i></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" ng-if="!escompra">
+		<div class="col-6 col-md-2 offset-md-8">
+			<p class="text-right font-weight-bold">Total Gastos:</p>
+		</div>
+		<div class="col-6 col-md-2">
+			<p class="text-right font-weight-bold text-monospace">{{ factura.gastos | currency }}</p>
+		</div>
+	</div>
+
+	<div class="row" ng-if="!escompra">
+		<div class="col">
+			<div class="alert alert-secondary text-center" role="alert">
+				PAGOS Y COBROS
+			</div>
+		</div>
+	</div>
+	<div class="row" ng-if="!escompra" style="padding-bottom: 20px;">
+		<div class="custom-control custom-switch factura-custom-switch col">
+			<input type="checkbox" class="custom-control-input factura-checkbox" id="switchPagadoHonorariosAgencia" ng-model="factura.agencia_honorarios_pagado" ng-change="updateImportesPagados(1)">
+			<label class="custom-control-label" for="switchPagadoHonorariosAgencia">Pagado honorarios por agencia</label>
+			<input type="date" class="form-control" placeholder="Fecha" ng-model="factura.agencia_honorarios_fecha">
+			<input type="number" class="form-control" placeholder="Importe" ng-model="factura.agencia_honorarios_importe">
+		</div>
+		<div class="custom-control custom-switch factura-custom-switch col">
+			<input type="checkbox" class="custom-control-input factura-checkbox" id="switchPagadoGastosAgencia" ng-model="factura.agencia_gastos_pagado" ng-change="updateImportesPagados(2)">
+			<label class="custom-control-label" for="switchPagadoGastosAgencia">Pagado gastos por agencia</label>
+			<input type="date" class="form-control" placeholder="Fecha" ng-model="factura.agencia_gastos_fecha">
+			<input type="number" class="form-control" placeholder="Importe" ng-model="factura.agencia_gastos_importe">
+		</div>
+		<div class="custom-control custom-switch factura-custom-switch col">
+			<input type="checkbox" class="custom-control-input factura-checkbox" id="switchPagadoHonorariosGuia" ng-model="factura.guia_honorarios_pagado" ng-change="updateImportesPagados(3)">
+			<label class="custom-control-label" for="switchPagadoHonorariosGuia">Pagado honorarios guía</label>
+			<input type="date" class="form-control" placeholder="Fecha" ng-model="factura.guia_honorarios_fecha">
+			<input type="number" class="form-control" placeholder="Importe" ng-model="factura.guia_honorarios_importe">
+		</div>
+		<div class="custom-control custom-switch factura-custom-switch col">
+			<input type="checkbox" class="custom-control-input factura-checkbox" id="switchPagadoGastosGuia" ng-model="factura.guia_gastos_pagado" ng-change="updateImportesPagados(4)">
+			<label class="custom-control-label" for="switchPagadoGastosGuia">Pagado gastos guía</label>
+			<input type="date" class="form-control" placeholder="Fecha" ng-model="factura.guia_gastos_fecha">
+			<input type="number" class="form-control" placeholder="Importe" ng-model="factura.guia_gastos_importe">
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-12 col-md-3">
+			<span ng-if="factura.grupos.length > 0">Grupos facturados:</span>
+			<a ng-repeat="grupo in factura.grupos" ui-sref="app.grupo({id: grupo})"><span ng-if="$index>0"> , </span>{{grupo}}</a>
+		</div>
+		<div class="col-12 col-md-3">
+			<span ng-if="factura.tarifa">Tarifa aplicada: {{ factura.tarifa }}</span>
+		</div>
+		<div class="col-12 col-md-6" ng-if="factura.modificadopor">
+			<p class="text-md-right">{{escompra ? 'Gasto modificado' : 'Factura modificada'}} por {{factura.modificadopor | uppercase}} el {{factura.fechamodificacion | date:'medium'}}</p>
+		</div>
+	</div>
+
+</form>
+
+<p class="mt-4">&nbsp;</p>
+
+<!-- Footer con botones -->
+<nav class="navbar navbar-mobile fixed-bottom d-flex justify-content-around justify-content-md-end">
+	<div class="btn-toobar d-none d-md-block" role="group">
+		<div class="btn-group dropup">
+			<button class="btn btn-outline-light text-white" type="button" title="Más Opciones" data-toggle="dropdown"><i class="material-icons mi-vam">more_vert</i> Más</button>
+			<div class="dropdown-menu" style="background-color: black;">
+				<button class="btn text-white" type="button" title="Email"    ng-disabled="!factura.idfactura" ng-click="emailFactura()" ng-if="!escompra"><i class="material-icons mi-vam">email</i> <span>Email</span></button>
+				<button class="btn text-white" type="button" title="Proforma" ng-disabled="!factura.idfactura" ng-click="printFactura(true)" ng-if="!escompra"><i class="material-icons mi-vam">print</i> <span>Proforma</span></button>
+				<button class="btn text-white" type="button" title="Clonar"   ng-disabled="!factura.idfactura" ng-click="clonarFactura()" ng-if="!escompra"><i class="material-icons mi-vam">file_copy</i> Clonar</button>
+				<button class="btn text-white" type="button" title="Borrar"   ng-disabled="!factura.idfactura" ng-click="deleteFactura()"><i class="material-icons mi-vam">delete</i> Borrar</button>
+			</div>
+		</div>
+	    <button class="btn btn-outline-light text-white"           type="button" title="Arriba"                                              ng-click="goToTop()"><i class="material-icons mi-vam">arrow_upward</i> Arriba</button>
+		<button class="btn btn-outline-light text-white"           type="button" title="Descartar Cambios" ng-disabled="!formFactura.$dirty" ng-click="descartarCambios()"><i class="material-icons mi-vam">arrow_back</i> Descartar Cambios</button>
+		<button class="btn btn-outline-light text-white"           type="button" title="Imprimir"          ng-disabled="!factura.idfactura"  ng-click="printFactura(false)"><i class="material-icons mi-vam">print</i> Imprimir</button>
+		<button class="btn btn-outline-light text-white"           type="button" title="Guardar"                                             ng-click="saveFactura()"><i class="material-icons mi-vam">save</i> Guardar</button>
+		<button class="btn btn-outline-light text-white d-md-none" type="button" title="Arriba"                                              ng-click="goToTop()"><i class="material-icons mi-vam">arrow_upward</i> Arriba</button>
+	</div>
+
+	<div class="btn-toobar d-md-none" role="group">
+		<div class="btn-group dropup">
+			<button class="btn text-white" type="button" title="Más Opciones" data-toggle="dropdown"><i class="material-icons">more_vert</i></button>
+			<div class="dropdown-menu" style="background-color: black;">
+				<button class="btn text-white" type="button" title="Email"    ng-disabled="!factura.idfactura" ng-click="emailFactura()" ng-if="!escompra"><i class="material-icons mi-vam">email</i> <span>Email</span></button>
+				<button class="btn text-white" type="button" title="Proforma" ng-disabled="!factura.idfactura" ng-click="printFactura(true)" ng-if="!escompra"><i class="material-icons mi-vam">print</i> <span>Proforma</span></button>
+				<button class="btn text-white" type="button" title="Clonar"   ng-disabled="!factura.idfactura" ng-click="clonarFactura()" ng-if="!escompra"><i class="material-icons mi-vam">file_copy</i> Clonar</button>
+				<button class="btn text-white" type="button" title="Borrar"   ng-disabled="!factura.idfactura" ng-click="deleteFactura()"><i class="material-icons mi-vam">delete</i> Borrar</button>
+			</div>
+		</div>
+		<button class="btn text-white"           type="button" title="Descartar Cambios" ng-disabled="!formFactura.$dirty" ng-click="descartarCambios()"><i class="material-icons">arrow_back</i></button>
+		<button class="btn text-white"           type="button" title="Imprimir"          ng-disabled="!factura.idfactura"  ng-click="printFactura(false)"><i class="material-icons">print</i></button>
+		<button class="btn text-white"           type="button" title="Guardar"                                             ng-click="saveFactura()"><i class="material-icons">save</i></button>
+		<button class="btn text-white d-md-none" type="button" title="Arriba"                                              ng-click="goToTop()"><i class="material-icons">arrow_upward</i></button>
+	</div>
+</nav>

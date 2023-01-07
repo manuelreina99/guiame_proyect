@@ -1,0 +1,63 @@
+<!-- Header con información básica -->
+<nav class="navbar pb-0 bg-white">
+  <h4>
+    {{title}}
+    <span class="spinner-border spinner-border-sm" role="status" ng-if="loading" style="vertical-align: unset;"></span>
+  </h4>
+  <h4>
+    <span class="badge badge-light float-right">{{totalapuntes | currency}}</span>
+  </h4>
+</nav>
+
+
+<div class="container" style="margin-top: 20px;">
+	<div class="row justify-content-center" ng-if="currentUser.rol >= 9">
+		<form class="form-inline">
+			<div class="input-group mb-2 mr-sm-2">
+				<div class="input-group-prepend">
+					<div class="input-group-text"><i class="material-icons">calendar_today</i></div>
+				</div>
+				<input type="date" class="form-control" ng-model="apunte.fecha">
+			</div>
+			<input type="text" class="form-control mb-2 mr-sm-2" placeholder="Descripción" ng-model="apunte.descripcion">
+			<input type="number" class="form-control mb-2 mr-sm-2" placeholder="Importe" ng-model="apunte.importe">
+		</form>
+	</div>
+</div>
+
+<div class="container">
+	<div class="table-responsive">
+	  <table class="table table-hover bg-white">
+	  <thead>
+	    <tr>
+	      <th scope="col">Fecha</th>
+	      <th scope="col">Descripción</th>
+	      <th scope="col" class="text-right">Importe</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="apunte in apuntes">
+	      <th scope="row">{{apunte.fecha | date : 'dd MMM y'}}</th>
+	      <td>{{apunte.descripcion}}</td>
+	      <td class="text-right">{{apunte.importe | currency}}</td>
+	    </tr>
+	  </tbody>
+	  </table>
+	</div>
+</div>
+
+<p class="mt-4">&nbsp;</p>
+
+<!-- Footer con botones -->
+<nav class="navbar navbar-mobile fixed-bottom d-flex justify-content-around justify-content-md-end">
+	<div class="btn-toobar d-none d-md-block" role="group">
+		<button class="btn btn-outline-light text-white" type="button" title="Nuevo"  ng-click="addApunte()"
+			ng-disabled="!apunte.fecha || !apunte.descripcion || !apunte.importe || apunte.importe == 0"><i class="material-icons mi-vam">add</i> Nuevo</button>
+		<button class="btn btn-outline-light text-white" type="button" title="Arriba" ng-click="goToTop()"><i class="material-icons mi-vam">arrow_upward</i> Arriba</button>
+	</div>
+	<div class="btn-toobar d-md-none" role="group">
+		<button class="btn text-white" type="button" title="Nuevo"  ng-click="addApunte()"
+			ng-disabled="!apunte.fecha || !apunte.descripcion || !apunte.importe || apunte.importe == 0"><i class="material-icons">add</i></button>
+		<button class="btn text-white" type="button" title="Arriba" ng-click="goToTop()"><i class="material-icons">arrow_upward</i></button>
+	</div>
+</nav>

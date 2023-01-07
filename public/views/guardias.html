@@ -1,0 +1,95 @@
+<!-- Header con información básica -->
+<nav class="navbar pb-0 bg-white">
+   <span class="h4">{{title}} <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" ng-if="loading" style="vertical-align: unset;"></span></span>
+</nav>
+
+<div class="row">
+   <div class="col-12 col-md">
+<div class="table-responsive">
+<table class="table table-hover bg-white">
+<thead>
+<tr>
+<th colspan="4" class="text-center">GENERAL</th>
+</tr>
+</thead>
+</table>
+</div>
+      <div class="card text-center">
+         <div class="input-group">
+            <div class="input-group-prepend" style="display: initial;">
+               <div class="input-group-text">Inicio:</div>
+            </div>
+            <input type="date" class="form-control" ng-model="defectoGuardias.fechainicio">
+         </div>
+         <ul class="list-group text-left">
+           <li class="list-group-item list-group-item-action" ng-repeat="user in defectoGuardias.usuarios | orderBy:'guardiaorden'">
+               <h5>
+                  <img ng-src="./images/users/{{user.idprofilepicture}}.jpg" class="align-self-center" alt="{{user.nombre}}" width="48" style="border-radius: 20px;">
+                  {{user.guardiaorden}}
+                  <button type="button" class="btn btn-sm btn-secondary ml-1" ng-click="changeOrder(user, true)"  ng-disabled="user.guardiaorden < 2"><i class="material-icons">keyboard_arrow_up</i></button>
+                  <button type="button" class="btn btn-sm btn-secondary" ng-click="changeOrder(user, false)" ng-disabled="user.guardiaorden >= defectoGuardias.usuarios.length"><i class="material-icons">keyboard_arrow_down</i></button>
+                  {{user.codigo}}
+                  <div class="btn-group float-right" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-secondary" ng-click="user.guardianumdias = user.guardianumdias - 1">-</button>
+                    <button type="button" class="btn btn-light" style="cursor: initial;">{{user.guardianumdias}}d</button>
+                    <button type="button" class="btn btn-secondary" ng-click="user.guardianumdias = user.guardianumdias + 1">+</button>
+                  </div>
+               </h5>
+           </li>
+         </ul>
+      </div>
+   </div>
+   <div class="col-12 col-md">
+      <div class="table-responsive">
+         <table class="table table-hover bg-white">
+            <thead>
+               <tr>
+                  <th colspan="4" class="text-center">EXCEPCIONES</th>
+               </tr>
+            </thead>
+            <thead>
+               <tr>
+                  <th scope="col">Guía de Guardia</th>
+                  <th scope="col">Inicio</th>
+                  <th scope="col">Fin</th>
+                  <th scope="col"></th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td>
+                     <select class="form-control" ng-model="newExc.codigousuario" required>
+                        <option ng-repeat="guia in guias" value="{{guia.codigo}}">{{guia.codigo}}</option>
+                     </select>
+                  </td>
+                  <td><input type="date" class="form-control" ng-model="newExc.fechaini" required></td>
+                  <td><input type="date" class="form-control" ng-model="newExc.fechafin" required></td>
+                  <td><button type="button" class="btn btn-secondary btn-sm" ng-click="addExcepcion()"><i class="material-icons">add</i></button></td>
+               </tr>
+               <tr ng-repeat="exc in excepcionesGuardias">
+                  <td><img ng-src="./images/users/{{exc.idprofilepicture}}.jpg" class="align-self-center mr-3" alt="{{exc.nombre}}" width="32" style="border-radius: 20px;"> {{exc.codigo}}</td>
+                  <td>{{exc.fechaini | date : 'EEE dd MMM y'}}</td>
+                  <td>{{exc.fechafin | date : 'EEE dd MMM y'}}</td>
+                  <td><i class="material-icons text-danger" ng-click="deleteExcepcion(exc.idguardia)" style="cursor: pointer;">delete</i></td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+
+<p class="mt-4">&nbsp;</p>
+
+<!-- Footer con botones -->
+<nav class="navbar navbar-mobile fixed-bottom d-flex justify-content-around justify-content-md-end">
+   <div class="btn-toobar d-none d-md-block" role="group">
+      <button class="btn btn-outline-light text-white" type="button" title="Descartar Cambios" ng-click="load(true)"><i class="material-icons mi-vam">arrow_back</i> Descartar Cambios</button>
+      <button class="btn btn-outline-light text-white" type="button" title="Guardar"           ng-click="saveDefectoGuardias(true)"><i class="material-icons mi-vam">save</i> Guardar</button>
+      <button class="btn btn-outline-light text-white" type="button" title="Arriba"            ng-click="goToTop()"><i class="material-icons mi-vam">arrow_upward</i> Arriba</button>
+   </div>
+   <div class="btn-toobar d-md-none" role="group">
+      <button class="btn text-white" type="button" title="Descartar Cambios" ng-click="load(true)"><i class="material-icons">arrow_back</i></button>
+      <button class="btn text-white" type="button" title="Guardar"           ng-click="saveDefectoGuardias(true)"><i class="material-icons">save</i></button>
+      <button class="btn text-white" type="button" title="Arriba"            ng-click="goToTop()"><i class="material-icons">arrow_upward</i></button>
+   </div>
+</nav>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" ng-app="guiame">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="./css/angular-notify-material.css" id="notifyTheme">
+    <link rel="stylesheet" href="./css/guiame_pre.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ng-dialog/1.4.0/css/ngDialog.min.css">
+    <link rel="stylesheet" href="./css/ngDialog-theme-default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ng-dialog/1.4.0/css/ngDialog-theme-plain.min.css">
+    <link rel="manifest" href="/manifest.json">
+
+    <title ng-if="!currentUser.tokenId">Guíame</title>
+    <title ng-if="currentUser.tokenId" ng-bind="(currentUser.empresa.nombre | uppercase) + ' | ' + pageTitle"></title>
+  </head>
+  <body ng-class="bg" class="mobile-bg-color">
+    <div class="container-fluid">
+        <div ui-view="header"></div>
+        <div ui-view="content" class="mobile-content"></div>
+        <!-- <div ui-view="footer"></div> -->
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular-resource.min.js"></script>
+    <script src="//unpkg.com/@uirouter/angularjs/release/angular-ui-router.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-dialog/1.4.0/js/ngDialog.min.js"></script>
+
+    <script src="scripts/vendors/angular-locale_es-es.js"></script>
+    <script src="scripts/vendors/angular-notify.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/controllers.js"></script>
+    <script src="scripts/grupoController.js"></script>
+    <script src="scripts/facturaController.js"></script>
+    <script src="scripts/services/auth.js"></script>
+    <script src="scripts/services/grupo.js"></script>
+    <script src="scripts/services/factura.js"></script>
+    <script src="scripts/services/pdu.js"></script>
+    <script src="scripts/services/print.js"></script>
+    <script src="scripts/services/message.js"></script>
+    <script src="scripts/services/company.js"></script>
+    <script src="scripts/vendors/validate-identifications.js"></script>
+    <script src="progressiveWebApp.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script src="scripts/vendors/angular-chart.js"></script>
+
+  </body>
+</html>

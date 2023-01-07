@@ -1,0 +1,97 @@
+body, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', sans-serif !important;
+}
+
+legend {
+	color:Blue;
+}
+
+.btn{
+    border-radius: 20px !important;
+}
+
+.fa-spin-custom, .glyphicon-spin {
+    -webkit-animation: spin 1000ms infinite linear;
+    animation: spin 1000ms infinite linear;
+}
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+
+.tablet div[class^="col"]{
+    padding-left:3px;
+    padding-right:3px;
+}
+/* Small devices (tablets, 768px and up) */
+/* @media (min-width: 768px) */
+/*@media (min-width: 600px)
+{
+    div[class^="col"]{padding-left:3px; padding-right:3px;}
+}
+
+@media (min-width: 992px)
+{
+    div[class^="col"]{padding-left:15px; padding-right:15px;}
+}*/
+
+/*Turn Off Number Input Spinners*/
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#doc-icon{
+    font-size: 48px;
+    color: #3399f3;
+    border: 2px solid;
+    border-radius: 40px;
+    padding: 5px;
+}
+
+#doc-icon-text{
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    position: absolute;
+    top: 16px;
+    left: 80px;
+}
+
+#panel-left-icon{
+    vertical-align: bottom;
+}
+
+#panel-right-icon{
+    cursor:pointer;
+}
+
+.panel-option-button {
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #d9edf7;
+}
+
+.panel-option-button-selected {
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #3399f3;
+    color: white;
+ }

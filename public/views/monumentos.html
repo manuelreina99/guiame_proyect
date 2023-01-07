@@ -1,0 +1,285 @@
+<!-- Header con información básica -->
+<nav class="navbar pb-0 bg-white">
+	<span class="h4">{{title}} <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" ng-if="loading" style="vertical-align: unset;"></span></span>
+</nav>
+
+<div style="margin-top: 20px;">
+	<div class="row">
+		<div class="col-12 col-md-3">
+			<label>Monumentos</label>
+			<select class="custom-select" ng-model="monumento" ng-change="updateSelectedMonumento(monumento)">
+				<option ng-repeat="monumento in monumentos | orderBy:'codigo'" ng-value="monumento">{{monumento.codigo}}-{{monumento.descripcion}}</option>
+			</select>
+		</div>
+		<div class="col-12 col-md-9" ng-if="monumento">
+			<form name="currentForm.formMonumento">
+				<div class="row">
+					<div class="form-group col-3">
+						<label>Codigo</label>
+						<input type="text" class="form-control" ng-model="monumento.codigo" ng-disabled="monumento.idmonumento > 0" ng-change="checkCodigo()" required minlength="3">
+						<small class="form-text text-danger" ng-if="codigorepetido">Este código ya existe.</small>
+					</div>
+					<div class="form-group col-9">
+						<label>Descripción</label>
+						<input type="text" class="form-control" ng-model="monumento.descripcion" required>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col">
+						<label>Teléfono1</label>
+						<input type="text" class="form-control" ng-model="monumento.tel1">
+					</div>
+					<div class="form-group col">
+						<label>Teléfono2</label>
+						<input type="text" class="form-control" ng-model="monumento.tel2">
+					</div>
+					<div class="form-group col">
+						<label>Precio</label>
+						<input type="number" class="form-control" ng-model="monumento.precio">
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col">
+						<label>Apertura</label>
+					</div>
+					<div class="form-group col">
+						<label>Mañana Desde</label>
+					</div>
+					<div class="form-group col">
+						<label>Mañana Hasta</label>
+					</div>
+					<div class="form-group col">
+						<label>Tarde Desde</label>
+					</div>
+					<div class="form-group col">
+						<label>Tarde Hasta</label>
+					</div>
+				</div>
+				<!-- Lunes -->
+				<div class="row">
+					<div class="col-4 col-md">
+						<div class="form-group custom-control custom-switch">
+							<input type="checkbox" class="custom-control-input" id="lunesCheck" ng-model="monumento.lunes">
+							<label class="custom-control-label" for="lunesCheck">Lunes</label>
+						</div>
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.lh1">
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.lh2">
+					</div>
+					<div class="form-group col-4 offset-4 col-md offset-md-0">
+						<input type="time" class="form-control" ng-model="monumento.lh3">
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.lh4">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-4 col-md">
+						<div class="form-group custom-control custom-switch">
+							<input type="checkbox" class="custom-control-input" id="martesCheck" ng-model="monumento.martes">
+							<label class="custom-control-label" for="martesCheck">Martes</label>
+						</div>
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.mh1">
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.mh2">
+					</div>
+					<div class="form-group col-4 offset-4 col-md offset-md-0">
+						<input type="time" class="form-control" ng-model="monumento.mh3">
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.mh4">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-4 col-md">
+						<div class="form-group custom-control custom-switch">
+							<input type="checkbox" class="custom-control-input" id="miercolesCheck" ng-model="monumento.miercoles">
+							<label class="custom-control-label" for="miercolesCheck">Miercoles</label>
+						</div>
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.xh1">
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.xh2">
+					</div>
+					<div class="form-group col-4 offset-4 col-md offset-md-0">
+						<input type="time" class="form-control" ng-model="monumento.xh3">
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.xh4">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-4 col-md">
+						<div class="form-group custom-control custom-switch">
+							<input type="checkbox" class="custom-control-input" id="juevesCheck" ng-model="monumento.jueves">
+							<label class="custom-control-label" for="juevesCheck">Jueves</label>
+						</div>
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.jh1">
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.jh2">
+					</div>
+					<div class="form-group col-4 offset-4 col-md offset-md-0">
+						<input type="time" class="form-control" ng-model="monumento.jh3">
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.jh4">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-4 col-md">
+						<div class="form-group custom-control custom-switch">
+							<input type="checkbox" class="custom-control-input" id="viernesCheck" ng-model="monumento.viernes">
+							<label class="custom-control-label" for="viernesCheck">Viernes</label>
+						</div>
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.vh1">
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.vh2">
+					</div>
+					<div class="form-group col-4 offset-4 col-md offset-md-0">
+						<input type="time" class="form-control" ng-model="monumento.vh3">
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.vh4">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-4 col-md">
+						<div class="form-group custom-control custom-switch">
+							<input type="checkbox" class="custom-control-input" id="sabadoCheck" ng-model="monumento.sabado">
+							<label class="custom-control-label" for="sabadoCheck">Sabado</label>
+						</div>
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.sh1">
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.sh2">
+					</div>
+					<div class="form-group col-4 offset-4 col-md offset-md-0">
+						<input type="time" class="form-control" ng-model="monumento.sh3">
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.sh4">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-4 col-md">
+						<div class="form-group custom-control custom-switch">
+							<input type="checkbox" class="custom-control-input" id="domingoCheck" ng-model="monumento.domingo">
+							<label class="custom-control-label" for="domingoCheck">Domingo</label>
+						</div>
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.dh1">
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.dh2">
+					</div>
+					<div class="form-group col-4 offset-4 col-md offset-md-0">
+						<input type="time" class="form-control" ng-model="monumento.dh3">
+					</div>
+					<div class="form-group col-4 col-md">
+						<input type="time" class="form-control" ng-model="monumento.dh4">
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col">
+						<label>Observaciones</label>
+						<textarea class="form-control" rows="3" ng-model="monumento.observaciones"></textarea>
+					</div>
+				</div>
+			</form>
+			<br/>
+			<div class="alert alert-warning" role="alert" ng-if="monumento.idmonumento">Incidencias {{monumento.codigo}}-{{monumento.descripcion}} <span class="badge badge-secondary">{{monumento.incidencias.length}}</span></div>
+			<div class="row" ng-if="monumento.idmonumento">
+				<div class="form-group col">
+					<label>Fecha Desde</label>
+					<input type="date" class="form-control" ng-model="newIncidencia.fechadesde">
+				</div>
+				<div class="form-group col">
+					<label>Fecha Hasta</label>
+					<input type="date" class="form-control" ng-model="newIncidencia.fechahasta">
+				</div>
+				<div class="form-group col">
+					<label>Mañana Desde</label>
+					<input type="time" class="form-control" ng-model="newIncidencia.h1">
+				</div>
+				<div class="form-group col">
+					<label>Mañana Hasta</label>
+					<input type="time" class="form-control" ng-model="newIncidencia.h2">
+				</div>
+				<div class="form-group col">
+					<label>Tarde Desde</label>
+					<input type="time" class="form-control" ng-model="newIncidencia.h3">
+				</div>
+				<div class="form-group col">
+					<label>Tarde Hasta</label>
+					<input type="time" class="form-control" ng-model="newIncidencia.h4">
+				</div>
+				<div class="form-group col">
+					<label>&nbsp;&nbsp;</label>
+					<button class="btn btn-success float-right form-control" ng-click="upsertIncidencia(newIncidencia)" ng-disabled="monumento.idmonumento == 0 || !newIncidencia.fechadesde || !newIncidencia.fechahasta">Nueva Incidencia</button>
+				</div>
+			</div>
+			<div class="row" ng-if="monumento.idmonumento" ng-repeat="incidencia in monumento.incidencias">
+				<div class="form-group col">
+					<input type="date" class="form-control" ng-model="incidencia.fechadesde">
+				</div>
+				<div class="form-group col">
+					<input type="date" class="form-control" ng-model="incidencia.fechahasta">
+				</div>
+				<div class="form-group col">
+					<input type="time" class="form-control" ng-model="incidencia.h1">
+				</div>
+				<div class="form-group col">
+					<input type="time" class="form-control" ng-model="incidencia.h2">
+				</div>
+				<div class="form-group col">
+					<input type="time" class="form-control" ng-model="incidencia.h3">
+				</div>
+				<div class="form-group col">
+					<input type="time" class="form-control" ng-model="incidencia.h4">
+				</div>
+				<div class="form-group col">
+					<div class="btn-group float-right" role="group">
+						<button type="button" class="btn btn-success" ng-click="upsertIncidencia(incidencia)">Actualizar</button>
+						<button type="button" class="btn btn-danger" ng-click="deleteIncidencia(incidencia.idmonumentoincidencia)">Borrar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+<p class="mt-4">&nbsp;</p>
+
+<!-- Footer con botones -->
+<nav class="navbar navbar-mobile fixed-bottom d-flex justify-content-around justify-content-md-end">
+	<div class="btn-toobar d-none d-md-block" role="group">
+		<button class="btn btn-outline-light text-white" type="button" title="Borrar"  ng-if="monumento" ng-click="deleteMonumento()" ng-disabled="!monumento.idmonumento"><i class="material-icons mi-vam">delete</i> Borrar</button>
+		<button class="btn btn-outline-light text-white" type="button" title="Nuevo"                     ng-click="newMonumento()"><i class="material-icons mi-vam">add</i> Nuevo</button>
+		<button class="btn btn-outline-light text-white" type="button" title="Guardar" ng-if="monumento" ng-click="upsertMonumento()" ng-disabled="currentForm.formMonumento.$invalid"><i class="material-icons mi-vam">save</i> Guardar</button>
+		<button class="btn btn-outline-light text-white" type="button" title="Arriba"                    ng-click="goToTop()"><i class="material-icons mi-vam">arrow_upward</i> Arriba</button>
+	</div>
+	<div class="btn-toobar d-md-none" role="group">
+		<button class="btn text-white" type="button" title="Borrar"  ng-if="monumento" ng-click="deleteMonumento()" ng-disabled="!monumento.idmonumento"><i class="material-icons">delete</i></button>
+		<button class="btn text-white" type="button" title="Nuevo"                     ng-click="newMonumento()"><i class="material-icons">add</i></button>
+		<button class="btn text-white" type="button" title="Guardar" ng-if="monumento" ng-click="upsertMonumento()" ng-disabled="currentForm.formMonumento.$invalid"><i class="material-icons">save</i></button>
+		<button class="btn text-white" type="button" title="Arriba"                    ng-click="goToTop()"><i class="material-icons">arrow_upward</i></button>
+	</div>
+</nav>

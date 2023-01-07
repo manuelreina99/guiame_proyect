@@ -1,0 +1,67 @@
+<!-- Header con información básica -->
+<nav class="navbar pb-0 bg-white">
+	<span class="h4">
+		{{title}} <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" ng-if="loading" style="vertical-align: unset;"></span>
+	</span>
+</nav>
+
+<div class="row mt-1">
+	<div class="custom-control custom-switch col-6 col-md-3 offset-md-6 d-flex justify-content-end mt-2">
+		<input type="checkbox" class="custom-control-input" id="switchGuias" ng-model="params.switchguia" ng-change="switchGuia()">
+		<label class="custom-control-label" for="switchGuias">Incluir Guías</label>
+	</div>
+	<div class="input-group mb-3 col-6 col-md-3">
+	  <div class="input-group-prepend">
+	    <label class="input-group-text" for="inputGroupSelect01">Desde</label>
+	  </div>
+	  <select class="custom-select" id="inputGroupSelect01" ng-model="params.anio" ng-change="load(true)">
+	    <option ng-repeat="anio in anios" value="{{anio}}" ng-selected="{{anio == params.anio}}">{{anio}}</option>
+	  </select>
+	</div>
+</div>
+
+<div class="container-fluid mt-1">
+<div class="row">
+
+	<table class="table table-striped table-hover bg-white col-12 col-md-3">
+	  <thead>
+	    <tr>
+	      <th scope="col">Año</th>
+	      <th scope="col" ng-if="params.group == 'guia'">Guía</th>
+	      <th scope="col" class="text-right">Grupos</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="stat in stats">
+	      <th scope="row">{{ stat.anio }}</th>
+	      <th scope="row" ng-if="params.group == 'guia'">{{ stat.guialocal }}</th>
+	      <td class="text-right">{{ stat.cont }}</td>
+	    </tr>
+	  </tbody>
+	</table>
+
+	<div class="col-12 col-md-9 pl-md-1">
+	<canvas id="line" class="chart chart-horizontal-bar bg-white"
+			chart-data="data"
+			chart-labels="labels"
+			chart-series="series"
+			chart-colors="colors">
+	</canvas>
+	</div>
+
+</div>
+</div>
+
+<p class="mt-4">&nbsp;</p>
+
+<!-- Footer con botones -->
+<nav class="navbar navbar-mobile fixed-bottom d-flex justify-content-around justify-content-md-end">
+	<div class="btn-toobar d-none d-md-block" role="group">
+		<button class="btn btn-outline-light text-white" type="button" title="Actualizar" ng-click="load(true)"><i class="material-icons mi-vam">refresh</i> Actualizar</button>
+		<button class="btn btn-outline-light text-white" type="button" title="Arriba" ng-click="goToTop()"><i class="material-icons mi-vam">arrow_upward</i> Arriba</button>
+	</div>
+	<div class="btn-toobar d-md-none" role="group">
+		<button class="btn text-white" type="button" title="Nuevo"  ng-click="load(true)"><i class="material-icons">refresh</i></button>
+		<button class="btn text-white" type="button" title="Arriba" ng-click="goToTop()"><i class="material-icons">arrow_upward</i></button>
+	</div>
+</nav>

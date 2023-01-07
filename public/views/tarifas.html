@@ -1,0 +1,129 @@
+<!-- Header con información básica -->
+<nav class="navbar pb-0 bg-white">
+	<span class="h4">{{title}} <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" ng-if="loading" style="vertical-align: unset;"></span></span>
+</nav>
+
+<div class="container-fluid" style="margin-top: 20px;">
+	<div class="row">
+		<div class="col-12 col-md-3">
+			<label>Tarifa</label>
+			<select class="form-control" ng-model="tarifa">
+				<option ng-repeat="tar in tarifas" ng-value="tar" ng-selected="{{tar.codigo == tarifa.codigo}}">{{tar.codigo}}-{{tar.descripcion}}</option>
+			</select>
+		</div>
+		<div class="col-12 col-md-9">
+			<form ng-if="tarifa" name="currentForm.formTarifa">
+				<div class="row">
+					<div class="form-group col-3">
+						<label>Codigo</label>
+						<input type="text" class="form-control" ng-model="tarifa.codigo" ng-disabled="tarifa.idtarifa > 0" ng-change="checkCodigo()" required minlength="3">
+						<small class="form-text text-danger" ng-if="codigorepetido">Este código ya existe.</small>
+					</div>
+					<div class="form-group col-9">
+						<label>Nombre</label>
+						<input type="text" class="form-control" ng-model="tarifa.descripcion" required>
+					</div>
+				</div>
+				<div class="row" ng-repeat="precio in tarifa.precios | orderBy:['tipovisita','paxdesde']">
+					<div class="form-group col-12 col-md-3">
+						<label ng-if="$index==0">Tipo de Visita</label>
+						<select class="form-control" ng-model="precio.tipovisita">
+							<option ng-repeat="item in pdus  | filter:'tipovisita'" value="{{item.codigo}}" ng-selected="{{item.codigo == precio.tipovisita}}">{{item.nombre}}</option>
+						</select>
+					</div>
+					<div class="form-group col-3 col-md-2">
+						<label ng-if="$index==0">Pax Desde</label>
+						<input type="number" class="form-control" ng-model="precio.paxdesde">
+					</div>
+					<div class="form-group col-3 col-md-2">
+						<label ng-if="$index==0">Pax Hasta</label>
+						<input type="number" class="form-control" ng-model="precio.paxhasta">
+					</div>
+					<div class="form-group col-3 col-md-2">
+						<label ng-if="$index==0">Laborable</label>
+						<input type="number" class="form-control" ng-model="precio.laborable">
+					</div>
+					<div class="form-group col-3 col-md-2">
+						<label ng-if="$index==0">Festivo</label>
+						<input type="number" class="form-control" ng-model="precio.festivo">
+					</div>
+					<div class="col-1 align-self-end">
+						<i class="material-icons text-danger" ng-click="deletePrecio(precio)" style="cursor: pointer; padding-bottom: 20px;">delete</i>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-12 col-md-3">
+						<label ng-if="tarifa.precios.length==0">Tipo de Visita</label>
+						<select class="form-control" ng-model="newPrecio.tipovisita">
+							<option ng-repeat="item in pdus  | filter:'tipovisita'" value="{{item.codigo}}" ng-selected="{{item.codigo == newPrecio.tipovisita}}">{{item.nombre}}</option>
+						</select>
+					</div>
+					<div class="form-group col-3 col-md-2">
+						<label ng-if="tarifa.precios.length==0">Pax Desde</label>
+						<input type="number" class="form-control" ng-model="newPrecio.paxdesde">
+					</div>
+					<div class="form-group col-3 col-md-2">
+						<label ng-if="tarifa.precios.length==0">Pax Hasta</label>
+						<input type="number" class="form-control" ng-model="newPrecio.paxhasta">
+					</div>
+					<div class="form-group col-3 col-md-2">
+						<label ng-if="tarifa.precios.length==0">Laborable</label>
+						<input type="number" class="form-control" ng-model="newPrecio.laborable">
+					</div>
+					<div class="form-group col-3 col-md-2">
+						<label ng-if="tarifa.precios.length==0">Festivo</label>
+						<input type="number" class="form-control" ng-model="newPrecio.festivo">
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-6 col-md-2 offset-md-7">
+						<label>Monumento Laborable</label>
+						<input type="number" class="form-control" ng-model="tarifa.monumentolaborable">
+					</div>
+					<div class="form-group col-6 col-md-2">
+						<label>Monumento Festivo</label>
+						<input type="number" class="form-control" ng-model="tarifa.monumentofestivo">
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-6 col-md-2 offset-md-7">
+						<label>Hora Laborable</label>
+						<input type="number" class="form-control" ng-model="tarifa.horalaborable">
+					</div>
+					<div class="form-group col-6 col-md-2">
+						<label>Hora Festivo</label>
+						<input type="number" class="form-control" ng-model="tarifa.horafestivo">
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-6 col-md-2 offset-md-7">
+						<label>Idioma Laborable</label>
+						<input type="number" class="form-control" ng-model="tarifa.idiomalaborable">
+					</div>
+					<div class="form-group col-6 col-md-2">
+						<label>Idioma Festivo</label>
+						<input type="number" class="form-control" ng-model="tarifa.idiomafestivo">
+					</div>
+				</div>
+				<br/>
+			</form>
+		</div>
+	</div>
+	
+</div>
+
+<p class="mt-4">&nbsp;</p>
+
+<!-- Footer con botones -->
+<nav class="navbar navbar-mobile fixed-bottom d-flex justify-content-around justify-content-md-end">
+	<div class="btn-toobar d-none d-md-block" role="group">
+		<button class="btn btn-outline-light text-white" type="button" title="Imprimir" ng-if="tarifa" ng-click="printTarifa()"><i class="material-icons mi-vam">print</i> Imprimir</button>
+		<button class="btn btn-outline-light text-white" type="button" title="Nueva"                   ng-click="newTarifa()"><i class="material-icons mi-vam">add</i> Nueva</button>
+		<button class="btn btn-outline-light text-white" type="button" title="Guardar"  ng-if="tarifa" ng-click="upsertTarifa(true)" ng-disabled="currentForm.formTarifa.$invalid"><i class="material-icons mi-vam">save</i> Guardar</button>
+	</div>
+	<div class="btn-toobar d-md-none" role="group">
+		<button class="btn text-white" type="button" title="Imprimir" ng-if="tarifa" ng-click="printTarifa()"><i class="material-icons">print</i></button>
+		<button class="btn text-white" type="button" title="Nueva"                   ng-click="newTarifa()"><i class="material-icons">add</i></button>
+		<button class="btn text-white" type="button" title="Guardar"  ng-if="tarifa" ng-click="upsertTarifa(true)" ng-disabled="currentForm.formTarifa.$invalid"><i class="material-icons">save</i></button>
+	</div>
+</nav>

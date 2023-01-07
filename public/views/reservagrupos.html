@@ -1,0 +1,76 @@
+<!-- Header con información básica -->
+<nav class="navbar pb-0 bg-white">
+	<span class="h4">{{title}} <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" ng-if="loading" style="vertical-align: unset;"></span></span>
+</nav>
+
+<div style="margin-top: 20px;">
+	<form name="formSerieGrupos">
+		<div class="row">
+			<div class="col-12 col-md-6">
+				<div class="row">
+					<div class="form-group col-12">
+						<label class="h5">Creación automática de grupos entre dos fechas</label>
+					</div>
+					<div class="form-group col-12">
+						<label>Agencia</label>
+						<select class="form-control" ng-model="datosSerie.agencia" required>
+							<option ng-repeat="item in pdus  | filter: { tabla : 'agencia' }:true " value="{{item.codigo}}" ng-selected="{{item.codigo == datosSerie.agencia}}">{{item.nombre}}</option>
+						</select>
+					</div>
+					<div class="form-group col-12">
+						<label>Referencia</label>
+						<input type="text" class="form-control" placeholder="Referencia" ng-model="datosSerie.referencia" required>
+					</div>
+					<div class="form-group col-12">
+						<label>Fecha Inicio</label>
+						<input type="date" class="form-control" placeholder="Fecha Inicio" ng-model="datosSerie.fechaini" ng-change="previewGrupos()" required>
+					</div>
+					<div class="form-group col-12">
+						<label>Fecha Fin</label>
+						<input type="date" class="form-control" placeholder="Fecha Fin" ng-model="datosSerie.fechafin" ng-change="previewGrupos()" required>
+					</div>
+					<div class="form-group col-12 col-md-6">
+						<label>Día de la Semana</label>
+						<select class="form-control" ng-model="datosSerie.diasemana" ng-change="previewGrupos()" required>
+							<option ng-repeat="item in pdus  | filter: { tabla : 'diasemana' }:true " value="{{item.codigo}}" ng-selected="{{item.codigo == datosSerie.diasemana}}">{{item.nombre}}</option>
+						</select>
+					</div>
+					<div class="form-group col-12 col-md-6">
+						<label>Hora</label>
+						<input type="time" class="form-control" name="hora" ng-model="datosSerie.hora" ng-change="previewGrupos()">
+					</div>
+					<div class="form-group col-12 col-md-6">
+						<label>Nº Grupos Por Día</label>
+						<input type="number" class="form-control" name="numgruposdia" required
+							   ng-model="datosSerie.numgruposdia" ng-change="previewGrupos()" min="1">
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-md-6">
+				<div class="table-responsive">
+					<table class="table table-hover bg-white">
+						<thead>
+						<tr>
+							<th>Grupos <span class="badge badge-secondary">{{grupos.length}}</span></th>
+						</tr>
+						</thead>
+					<tbody>
+						<tr ng-repeat="grupo in grupos">
+							<td>{{grupo | date : 'EEE dd MMM y HH:mm'}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<p class="mt-4">&nbsp;</p>
+
+<!-- Footer con botones -->
+<nav class="navbar navbar-mobile fixed-bottom d-flex justify-content-around justify-content-md-end">
+	<button class="btn btn-outline-light text-white d-none d-md-block" type="button" title="Generar Grupos" ng-click="generateGrupos()" ng-disabled="formSerieGrupos.$invalid"><i class="material-icons mi-vam">add</i> Generar Grupos</button>
+	<button class="btn text-white d-md-none" type="button" title="Generar Grupos" ng-click="generateGrupos()" ng-disabled="formSerieGrupos.$invalid"><i class="material-icons">add</i></button>
+	<button class="btn text-white d-md-none" type="button" title="Arriba"     ng-click="goToTop()"><i class="material-icons">arrow_upward</i></button>
+</nav>

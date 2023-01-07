@@ -1,0 +1,361 @@
+<!-- Header con información básica -->
+<nav class="navbar pb-0 bg-white">
+  <h4>
+    {{title}}
+    <span class="spinner-border spinner-border-sm" role="status" ng-if="loading.progress" style="vertical-align: unset;"></span>
+    <span class="badge badge-pill badge-success" ng-if="loading.ok" style="padding: .05em .2em;"><i class="material-icons" style="font-size: 12px;">done</i></span>
+  </h4>
+  <h4>
+    <span class="float-right text-danger ml-3">{{usuarioDeGuardia.codigo}}</span>
+    <span class="badge badge-light float-right">{{resFilter.contmanana}}M {{resFilter.conttarde}}T {{resFilter.contanulados}}A</span>
+  </h4>
+</nav>
+
+<!-- Filtros -->
+<div>
+  <div class="row">
+
+    <div class="col-12 col-md-4 d-none d-md-block" ng-if="!filtro.basico">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width: 100px;">Fecha Ini</span>
+        </div>
+        <div class="input-group-prepend" ng-click="filtro.fechaini = null; load(true)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">close</i></span>
+        </div>
+        <div class="input-group-prepend" ng-click="addDayToFiltroFecha('fechaini', -1)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">keyboard_arrow_left</i></span>
+        </div>
+        <div class="input-group-prepend" ng-if="getWeekdayName(filtro.fechaini)">
+          <span class="input-group-text text-monospace">{{ getWeekdayName(filtro.fechaini) }}</span>
+        </div>
+        <input type="date" class="form-control" ng-model="filtro.fechaini" ng-change="addDayToFiltroFecha('fechaini', 0)" min="2000-01-01" max="2100-12-31">
+        <div class="input-group-append" ng-click="addDayToFiltroFecha('fechaini', 1)" style="cursor: pointer;"  >
+          <span class="input-group-text"><i class="material-icons">keyboard_arrow_right</i></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4 d-none d-md-block" ng-if="!filtro.basico">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width: 100px;">Fecha Fin</span>
+        </div>
+        <div class="input-group-prepend" ng-click="filtro.fechafin = null; load(true)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">close</i></span>
+        </div>
+        <div class="input-group-prepend" ng-click="addDayToFiltroFecha('fechafin', -1)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">keyboard_arrow_left</i></span>
+        </div>
+        <div class="input-group-prepend" ng-if="getWeekdayName(filtro.fechafin)">
+          <span class="input-group-text text-monospace">{{ getWeekdayName(filtro.fechafin) }}</span>
+        </div>
+        <input type="date" class="form-control" ng-model="filtro.fechafin" ng-change="addDayToFiltroFecha('fechafin', 0)" min="2000-01-01" max="2100-12-31">
+        <div class="input-group-append" ng-click="addDayToFiltroFecha('fechafin', 1)" style="cursor: pointer;"  >
+          <span class="input-group-text"><i class="material-icons">keyboard_arrow_right</i></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4" ng-if="filtro.basico">
+      <div class="input-group">
+        <div class="input-group-prepend" ng-click="filtro.fechaini = null; filtro.fechafin = null; load(true)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">close</i></span>
+        </div>
+        <div class="input-group-prepend" ng-click="addDayToFiltroFecha('fechas', -1)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">keyboard_arrow_left</i></span>
+        </div>
+        <div class="input-group-prepend" ng-if="getWeekdayName(filtro.fechaini)">
+          <span class="input-group-text text-monospace">{{ getWeekdayName(filtro.fechaini) }}</span>
+        </div>
+        <input type="date" class="form-control" ng-model="filtro.fechaini" ng-change="addDayToFiltroFecha('fechas', 0)" min="2000-01-01" max="2100-12-31">
+        <div class="input-group-append" ng-click="addDayToFiltroFecha('fechas', 1)" style="cursor: pointer;"  >
+          <span class="input-group-text"><i class="material-icons">keyboard_arrow_right</i></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4 d-none d-md-block" ng-if="!filtro.basico">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width: 100px;">Referencia</span>
+        </div>
+        <div class="input-group-prepend" ng-click="filtro.ref = null; load(true)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">close</i></span>
+        </div>
+        <input type="text" class="form-control" ng-model="filtro.ref">
+        <div class="input-group-append" ng-click="load(true)" style="cursor: pointer;"  >
+            <span class="input-group-text"><i class="material-icons">search</i></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4" ng-if="filtro.show">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width: 100px;">Agencia</span>
+        </div>
+        <div class="input-group-prepend" ng-click="filtro.agencia = null; load(true)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">close</i></span>
+        </div>
+        <select class="form-control" ng-model="filtro.agencia" ng-change="load(true)">
+          <option ng-repeat="item in pdus  | filter: { tabla : 'agencia' }:true" value="{{item.codigo}}" ng-selected="{{item.codigo == filtro.agencia}}">{{item.nombre}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4" ng-if="filtro.show">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width: 100px;">Guía</span>
+        </div>
+        <div class="input-group-prepend" ng-click="filtro.guia = null; load(true)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">close</i></span>
+        </div>
+        <select class="form-control" ng-model="filtro.guia" ng-change="load(true)">
+          <option ng-repeat="item in pdus  | filter: { tabla : 'guia' }:true" value="{{item.codigo}}" ng-selected="{{item.codigo == filtro.guia}}">{{item.nombre}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4 d-none d-md-block" ng-if="!filtro.basico">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width: 100px;">Confirmado</span>
+        </div>
+        <div class="input-group-prepend" ng-click="filtro.confirmado = 'todos'; load(true)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">close</i></span>
+        </div>
+        <select class="form-control" ng-model="filtro.confirmado" ng-change="load(true)">
+          <option value="todos" ng-selected="{{filtro.confirmado == 'todos'}}">TODOS</option>
+          <option value="si" ng-selected="{{filtro.confirmado == 'todos'}}">SÍ</option>
+          <option value="no" ng-selected="{{filtro.confirmado == 'todos'}}">NO</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4 d-none d-md-block" ng-if="!filtro.basico">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width: 100px;">Forma Pago</span>
+        </div>
+        <div class="input-group-prepend" ng-click="filtro.formapago = 'todos'; load(true)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">close</i></span>
+        </div>
+        <select class="form-control" ng-model="filtro.formapago" ng-change="load(true)">
+          <option value="todos" ng-selected="{{filtro.facturado == 'todos'}}">TODAS</option>
+          <option ng-repeat="item in pdus  | filter: { tabla : 'formapago' }:true" value="{{item.codigo}}" ng-selected="{{item.codigo == filtro.formapago}}">{{item.nombre}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4 d-none d-md-block" ng-if="!filtro.basico">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width: 100px;">Tipo Fact</span>
+        </div>
+        <div class="input-group-prepend" ng-click="filtro.tipofactura = 'todos'; load(true)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">close</i></span>
+        </div>
+        <select class="form-control" ng-model="filtro.tipofactura" ng-change="load(true)">
+          <option value="todos" ng-selected="{{filtro.facturado == 'todos'}}">TODAS</option>
+          <option ng-repeat="item in pdus  | filter: { tabla : 'tipofactura' }:true" value="{{item.codigo}}" ng-selected="{{item.codigo == filtro.tipofactura}}">{{item.nombre}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4 d-none d-md-block" ng-if="!filtro.basico">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width: 100px;">Facturado</span>
+        </div>
+        <div class="input-group-prepend" ng-click="filtro.facturado = 'todos'; load(true)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">close</i></span>
+        </div>
+        <select class="form-control" ng-model="filtro.facturado" ng-change="load(true)">
+          <option value="todos" ng-selected="{{filtro.facturado == 'todos'}}">TODOS</option>
+          <option value="si" ng-selected="{{filtro.facturado == 'todos'}}">SÍ</option>
+          <option value="no" ng-selected="{{filtro.facturado == 'todos'}}">NO</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4 d-none d-md-block" ng-if="!filtro.basico">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width: 100px;">Idioma</span>
+        </div>
+        <div class="input-group-prepend" ng-click="filtro.idioma = null; load(true)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">close</i></span>
+        </div>
+        <select class="form-control" ng-model="filtro.idioma" ng-change="load(true)">
+          <option ng-repeat="item in pdus  | filter: { tabla : 'idioma' }:true" value="{{item.codigo}}" ng-selected="{{item.codigo == filtro.idioma}}">{{item.nombre}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4 d-none d-md-block" ng-if="!filtro.basico">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" style="width: 100px;">Anulado</span>
+        </div>
+        <div class="input-group-prepend" ng-click="filtro.anulado = 'todos'; load(true)" style="cursor: pointer;">
+          <span class="input-group-text"><i class="material-icons">close</i></span>
+        </div>
+        <select class="form-control" ng-model="filtro.anulado" ng-change="load(true)">
+          <option value="todos" ng-selected="{{filtro.anulado == 'todos'}}">TODOS</option>
+          <option value="si" ng-selected="{{filtro.anulado == 'todos'}}">SÍ</option>
+          <option value="no" ng-selected="{{filtro.anulado == 'todos'}}">NO</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Tabla para pantallas grandes -->
+<div class="table-responsive d-none d-md-block">
+  <table class="table table-hover bg-white">
+  <thead>
+    <tr>
+      <!--<th></th>-->
+      <th scope="col" class="text-right">Num</th>
+      <th scope="col"></th>
+      <th scope="col">Agencia</th>
+      <th scope="col">Referencia</th>
+      <th scope="col">Idiomas</th>
+      <th scope="col">Fecha/Hora</th>
+      <th scope="col">Tipo Visita</th>
+      <th scope="col">Monumentos</th>
+      <th scope="col">Punto de Encuentro</th>
+      <th scope="col" class="text-right">Pax</th>
+      <th scope="col">Guía</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="grupo in resFilter.grupos" style="cursor: pointer;" title="{{grupo.observaciones}}"
+        ng-style="grupo.anulado ? { 'background-color':'#eae4e4', 'color':'#c1bfbf'} : (grupo.tarde ? { 'background-color':'#ddedef' } : { 'background-color':'white' })">
+      <!--<td><input type="checkbox" ng-model="grupo.checked"></td>-->
+      <td ng-click="goToGrupo(grupo.idgrupo)" class="text-right">{{grupo.orden}}</td>
+      <td ng-click="goToGrupo(grupo.idgrupo)"><span ng-if="grupo.repite || grupo.repitecompleto" class="bg-danger text-white">R</span></td>
+      <td ng-click="goToGrupo(grupo.idgrupo)">{{grupo.agencia}}</td>
+      <td ng-click="goToGrupo(grupo.idgrupo)">{{grupo.ref}}</td>
+      <td ng-click="goToGrupo(grupo.idgrupo)">{{grupo.idiomastext}}</td>
+      <td ng-click="goToGrupo(grupo.idgrupo)">{{grupo.fechahora | date : 'HH:mm EEE dd MMM y'}}</td>
+      <td ng-click="goToGrupo(grupo.idgrupo)">{{grupo.tipovisitatext}}</td>
+      <td ng-click="goToGrupo(grupo.idgrupo)">{{grupo.monumentostext}}</td>
+      <td ng-click="goToGrupo(grupo.idgrupo)">{{grupo.puntoencuentrodesc}}</td>
+      <td ng-click="goToGrupo(grupo.idgrupo)" class="text-right">{{grupo.pax}}</td>
+      <td ng-click="goToGrupo(grupo.idgrupo)" title="{{grupo.guianombre}}">
+        <div style="position:relative;"><span class="triangle-top-right" ng-if="grupo.observacionimportante && !grupo.anulado" style="top: -13px;right: -12px;"></span></div>
+        <span class="text-monospace">{{grupo.guialocal}}</span>
+        <span class="text-monospace" ng-if="!grupo.guialocal">&nbsp;&nbsp;&nbsp;</span>
+        <img ng-src="./images/users/{{grupo.idprofilepicture}}.jpg"
+             alt='{{grupo.guialocal}}' width="32" style="border-radius: 20px; margin-top: -5px; margin-right: 5px;"
+             ng-class="{'blob red' : grupo.observacionimportante && !grupo.anulado}">
+      </td>
+    </tr>
+  </tbody>
+  </table>
+</div>
+
+<!-- Lista para pantallas pequeñas -->
+<ul class="list-group d-md-none">
+  <li class="list-group-item list-group-item-action" ng-repeat="grupo in resFilter.grupos"
+     ng-style="grupo.anulado ? { 'background-color':'#eae4e4', 'color':'#c1bfbf'} : (grupo.tarde ? { 'background-color':'#ddedef' } : { 'background-color':'white' })"
+     style="padding: .5rem;">
+    <div ng-click="goToGrupo(grupo.idgrupo)">
+      <h5>
+        {{grupo.orden}} {{grupo.agencia}}/{{grupo.ref.substr(0,12)}}
+        <span class="float-right">
+          <span class="text-monospace">{{grupo.guialocal}}</span>
+          <img ng-src="./images/users/{{grupo.idprofilepicture}}.jpg"
+               alt='{{grupo.guialocal}}' width="32" style="border-radius: 20px; margin-top: -5px; margin-right: 5px;"
+               ng-class="{'blob red' : grupo.observacionimportante && !grupo.anulado}">
+          <span class="triangle-top-right" ng-if="grupo.observacionimportante && !grupo.anulado"></span>
+        </span>
+      </h5>
+      <h6 ng-if="!grupo.anulado">
+        {{grupo.fechahora | date : 'dd-MM-yyyy'}}
+        {{grupo.puntoencuentro.length > 0 ? grupo.puntoencuentro : '??'}}
+        {{grupo.fechahora | date : 'HH:mm'}}h
+        <span class="float-right">{{grupo.pax}}pax</span>
+      </h6>
+      <div ng-if="!grupo.anulado">
+      <div class="row" style="font-size: small">
+          <span class="col-4">{{grupo.idiomastext.length > 0 ? grupo.idiomastext : 'SIN IDIOMA'}}</span>
+          <span class="col-3">{{grupo.tipovisitatext.length > 0 ? grupo.tipovisitatext : ''}}<span ng-if="grupo.repite || grupo.repitecompleto" class="text-danger float-right"><strong> R</strong></span></span>
+          <span class="col-5"><span class="float-right">{{grupo.monumentostext.length > 0 ? grupo.monumentostext : 'SIN MONUM.'}}</span></span>
+      </div>
+      </div>
+    </div>
+  </li>
+</ul>
+
+<nav ng-if="filtro.numpages > 1">
+  <ul class="pagination justify-content-end" style="cursor: pointer;">
+    <li class="page-item">
+      <a class="page-link" ng-click="loadNewPage(-1)"><span>&laquo;</span></a>
+    </li>
+    <li class="page-item"><a class="page-link">Pág. {{filtro.page}} de {{filtro.numpages}} [{{resFilter.cont}} grupos]</a></li>
+    <li class="page-item">
+      <a class="page-link" ng-click="loadNewPage(1)"><span>&raquo;</span></a>
+    </li>
+  </ul>
+</nav>
+
+<p style="margin-top: 100px">&nbsp;</p>
+
+<!-- Footer con botones -->
+<nav class="navbar navbar-mobile fixed-bottom d-flex justify-content-around justify-content-md-between">
+  <!-- Incidencias y horarios de monumentos -->
+  <div align="center">
+    <span ng-if="resFilter.incidencias.length > 0"><span class="h6 alert alert-danger p-0 blink_me">{{resFilter.incidencias[0].descripcion.substr(0,30)}}</span><br/></span>
+    <div style="font-size: 14px">
+      <span class="text-white text-monospace">{{ printHorariosMonumentos(1) }}</span><br/>
+      <span class="text-white text-monospace">{{ printHorariosMonumentos(2) }}</span>
+      <div class="d-none d-md-block">
+        <span class="text-white text-monospace">{{ printHorariosMonumentos(3) }}</span><br/>
+        <span class="text-white text-monospace">{{ printHorariosMonumentos(4) }}</span>
+      </div>
+    </div>
+  </div>
+  <!-- Guías no fijos disponibles, solo para pantallas grandes -->
+  <div class="d-none d-md-block" align="center">
+    <span ng-repeat="gnf in guiasnofijos" style="font-size: 14px">
+      {{ gnf.nombre.substr(0,25) }} <span ng-if="gnf.jornada">[{{ gnf.jornada }}]</span><br/>
+    </span>
+  </div>
+  <!-- Botones pantallas grandes -->
+  <div class="btn-toobar d-none d-md-block" role="group">
+    <div class="btn-group dropup">
+      <button class="btn btn-outline-light text-white" type="button" title="Más Opciones" data-toggle="dropdown"><i class="material-icons mi-vam">more_vert</i> Más</button>
+      <div class="dropdown-menu" style="background-color: black;">
+        <!--<button class="btn text-white" type="button" title="Facturar" ng-click="generateFactura()"><i class="material-icons mi-vam">receipt_long</i> Facturar</button>-->
+        <button class="btn text-white" type="button" title="Imprimir" ng-click="print()"><i class="material-icons mi-vam">print</i> Imprimir</button>
+      </div>
+    </div>
+    <!--<button class="btn btn-outline-light text-white" type="button" title="Facturar Todos" ng-click="facturarTodos()"><i class="material-icons mi-vam">receipt_long</i> Facturar Todos</button>-->
+    <button class="btn btn-outline-light text-white" ng-if="filtro.basico" type="button" title="Filtro" ng-click="switchFiltro()"><i class="material-icons mi-vam">filter_list</i> Filtro Completo</button>
+    <button class="btn btn-outline-light text-white" ng-if="!filtro.basico" type="button" title="Filtro" ng-click="switchFiltro()"><i class="material-icons mi-vam">filter_list</i> Filtro Básico</button>
+    <button class="btn btn-outline-light text-white" type="button" title="Actualizar" ng-click="load(true)"><i class="material-icons mi-vam">refresh</i> Actualizar</button>
+    <button class="btn btn-outline-light text-white" type="button" title="Nuevo"  ng-click="goToGrupo(0, filtro.fechaini)"><i class="material-icons mi-vam">add</i> Nuevo</button>
+    <button class="btn btn-outline-light text-white" type="button" title="Arriba" ng-click="goToTop()"><i class="material-icons mi-vam">arrow_upward</i> Arriba</button>
+    <button class="btn btn-outline-light text-white" type="button" title="Hoy"    ng-click="addDayToFiltroFecha('hoy', 0)"><i class="material-icons mi-vam">calendar_today</i> Hoy</button>
+  </div>
+  <!-- Botones mobile -->
+  <div class="btn-toobar d-md-none" role="group">
+    <div class="btn-group dropup">
+      <button class="btn text-white" type="button" title="Más Opciones" data-toggle="dropdown"><i class="material-icons">more_vert</i></button>
+      <div class="dropdown-menu" style="background-color: black;">
+        <button class="btn text-white" type="button" title="Imprimir" ng-click="print()"><i class="material-icons mi-vam">print</i> Imprimir</button>
+        <button class="btn text-white" ng-if="!filtro.show" type="button" title="Filtros"  ng-click="filtro.show = !filtro.show"><i class="material-icons mi-vam">filter_list</i> Más Filtros</button>
+        <button class="btn text-white" ng-if="filtro.show" type="button" title="Filtros"  ng-click="filtro.show = !filtro.show"><i class="material-icons mi-vam">filter_list</i> Menos Filtros</button>
+      </div>
+    </div>
+    <button class="btn text-white" type="button" title="Actualizar" ng-click="load(true)"><i class="material-icons">refresh</i></span></button>
+    <button class="btn text-white" type="button" title="Nuevo"      ng-click="goToGrupo(0, filtro.fechaini)"><i class="material-icons">add</i></button>
+    <button class="btn text-white" type="button" title="Arriba"     ng-click="goToTop()"><i class="material-icons">arrow_upward</i></button>
+    <button class="btn btn-outline-light text-white" type="button" title="Hoy"        ng-click="addDayToFiltroFecha('hoy', 0)">Hoy</button>
+  </div>
+</nav>

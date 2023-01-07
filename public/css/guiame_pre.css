@@ -1,0 +1,171 @@
+.navbar-light .navbar-nav .active>.nav-link, .navbar-light .navbar-nav .nav-link.active, .navbar-light .navbar-nav .nav-link.show, .navbar-light .navbar-nav .show>.nav-link {
+    color: white;
+    background-color: darkcyan;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: black;
+}
+
+.navbar-light .navbar-nav .active > .nav-link:hover {
+    color: black;
+}
+
+.navbar-light .navbar-nav .nav-link:hover {
+    color: black;
+}
+
+/*************** navbar-mobile ********************/
+.navbar-mobile {
+    color: white;
+    background-color: #1b1b37;
+}
+
+.navbar-mobile .navbar-nav .nav-link {
+    color: white;
+}
+
+.navbar-mobile .navbar-brand {
+    color: white;
+}
+
+.navbar-mobile .navbar-nav .active > .nav-link {
+    color: black;
+    background-color: #dadde7;
+}
+
+/**************************************************/
+
+.mobile-content{
+    margin-top: 60px;
+}
+
+.mobile-bg-color{
+    background-color: #dadde7;
+}
+
+.btn-outline-light:hover,
+.btn-outline-light:focus,
+.btn-outline-light:active {
+    background-color: #1b1b37!important;
+    box-shadow: none;
+}
+
+form.angularForm {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-right: 5px;
+}
+
+form.ng-dirty.angularForm {
+	background-color: #f0f0f0;
+	background-color: #F8E0E6;
+}
+
+input.ng-invalid, select.ng-invalid{
+    border:1px solid #FA787E;
+}
+
+.boton-factura {
+    margin-top: -3px;
+    cursor: pointer;
+    background-color: #28a745;
+    padding: 5px;
+    color: white;
+    border-radius: 5px;
+ }
+
+.factura-custom-switch{
+    margin-top: 25px;
+}
+
+.factura-checkbox{
+    position: unset;
+    margin-left: 17px;
+}
+
+/* Small devices (landscape phones, 576px and down) */
+@media (max-width: 576px) {
+    .peque {font-size: 1em;}
+}
+
+.grupo-custom-switch {
+    padding-left: 50px;
+    padding-top: 30px;
+}
+
+.mi-vam {
+    vertical-align:middle;
+}
+
+.btn-primary {
+    background-color: #1b1b37
+}
+
+/* BLIKER */
+.blink_me {
+  animation: blinker 2s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* PROFILE PICTURE PULSE */
+.blob {
+    background: black;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+    animation: pulse-black 2s infinite;
+}
+
+@keyframes pulse-black {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.8);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+}
+
+.blob.red {
+    background: rgba(255, 0, 0, 1);
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 1);
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.8);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+    }
+}
+
+/* TRIANGLE TOP RIGHT */
+.triangle-top-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 20px 20px 0;
+    border-color: transparent #dc3545 transparent transparent;
+}

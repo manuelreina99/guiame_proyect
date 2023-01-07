@@ -1,0 +1,127 @@
+<!-- Header con información básica -->
+<nav class="navbar pb-0 bg-white">
+	<span class="h4">{{title}} <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" ng-if="loading" style="vertical-align: unset;"></span></span>
+	<h4>
+		<span class="badge badge-light float-right">{{numGuiasDisponibles}}</span>
+	</h4>
+</nav>
+
+<div class="row">
+	<div class="col-12 offset-md-3 col-md-6">
+		<div class="input-group">
+			<div class="input-group-prepend d-none d-md-block">
+				<span class="input-group-text" style="width: 100px;">Fecha</span>
+			</div>
+			<div class="input-group-prepend" ng-click="addDayToFiltroFecha(-1)" style="cursor: pointer;">
+				<span class="input-group-text"><i class="material-icons">keyboard_arrow_left</i></span>
+			</div>
+			<div class="input-group-prepend" ng-if="getWeekdayName(filtro.fecha)">
+				<span class="input-group-text text-monospace">{{ getWeekdayName(filtro.fecha) }}</span>
+			</div>
+			<input type="date" class="form-control" ng-model="filtro.fecha" ng-change="load(true)">
+			<div class="input-group-append" ng-click="addDayToFiltroFecha(1)" style="cursor: pointer;"  >
+				<span class="input-group-text"><i class="material-icons">keyboard_arrow_right</i></span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div>
+	<div class="table-responsive">
+	  <table class="table table-hover bg-white">
+	  <thead>
+	    <tr>
+	      <th scope="col">Guía</th>
+	      <th scope="col" class="d-none d-md-block">Nombre</th>
+	      <th scope="col">Jornada</th>
+	      <th scope="col"></th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="reserva in datos.reservas" style="background-color: white">
+	      <td scope="row">
+			<span class="text-monospace" ng-if="reserva.jornada != 'N'">{{reserva.codigo}}</span>
+			<span class="text-monospace text-danger" ng-if="reserva.jornada == 'N'"><del>{{reserva.codigo}}</del></span>
+			<span class="badge badge-success ml-4" ng-if="reserva.numgrupos">{{reserva.numgrupos}}</span>
+			<span class="badge badge-danger ml-4" ng-if="!reserva.numgrupos">{{reserva.numgrupos}}</span>
+	      </td>
+	      <td class="d-none d-md-block" ng-if="reserva.jornada != 'N'">{{reserva.guianombre}}</td>
+	      <td class="d-none d-md-block text-danger" ng-if="reserva.jornada == 'N'"><del>{{reserva.guianombre}}</del></td>
+	      <td>{{reserva.jornada}}</td>
+	      <td><i class="material-icons text-danger" ng-click="deleteReserva(reserva.codigo, reserva.fijo, reserva.jornada, true)" style="cursor: pointer;">delete</i></td>
+	    </tr>
+	  </tbody>
+	  </table>
+	</div>
+</div>
+
+<div>
+	<div class="table-responsive">
+	  <table class="table table-hover bg-white">
+	  <tbody>
+	    <tr style="background-color: white">
+	      <td scope="row">Total Grupos</td>
+	      <td><span class="float-right">{{datos.totalGrupos}}</span></td>
+	    </tr>
+	    <tr style="background-color: white">
+	      <td scope="row">Grupos No Asignados</td>
+	      <td><span class="float-right">{{datos.totalGruposNoAsignados}}</span></td>
+	    </tr>
+	    <tr style="background-color: white">
+	      <td scope="row">Grupos De Guías Reservados</td>
+	      <td><span class="float-right">{{datos.totalGruposAsignadosAGuiasReservados}}</span></td>
+	    </tr>
+	    <tr style="background-color: white">
+	      <td scope="row">Grupos De Guías No Reservados</td>
+	      <td><span class="float-right">{{datos.totalGruposAsignadosAGuiasNoReservados}}</span></td>
+	    </tr>
+	  </tbody>
+	  </table>
+	</div>
+</div>
+
+<div>
+	<div class="row">
+		<div class="col-12 col-md-6">
+			<label class="float-right font-weight-bold mt-1">Reservar guía</label>
+		</div>
+	    <div class="col-12 col-md-3">
+	      <div class="input-group">
+	        <div class="input-group-prepend">
+	          <span class="input-group-text" style="width: 100px;">Guía</span>
+	        </div>
+	        <select class="form-control" ng-model="newReserva.guia">
+	          <option ng-repeat="item in pdus  | filter: { tabla : 'guia' }:true" value="{{item.codigo}}" ng-selected="{{item.codigo == filtro.guia}}">{{item.nombre}}</option>
+	        </select>
+	      </div>
+	    </div>
+
+	    <div class="col-12 col-md-3">
+	      <div class="input-group">
+	        <div class="input-group-prepend">
+	          <span class="input-group-text" style="width: 100px;">Jornada</span>
+	        </div>
+	        <select class="form-control" ng-model="newReserva.jornada">
+	       	  <option value="C">Día Completo</option>
+	          <option value="M">Mañana</option>
+	          <option value="T">Tarde</option>
+	        </select>
+	      </div>
+	    </div>
+	</div>
+</div>
+
+<p class="mt-4">&nbsp;</p>
+
+<!-- Footer con botones -->
+<nav class="navbar navbar-mobile fixed-bottom d-flex justify-content-around justify-content-md-end">
+	<div class="btn-toobar d-none d-md-block" role="group">
+		<button class="btn btn-outline-light text-white" type="button" title="Actualizar" ng-click="load(false)"><i class="material-icons mi-vam">refresh</i> Actualizar</button>
+		<button class="btn btn-outline-light text-white" type="button" title="Nuevo"      ng-click="addReserva()" ng-disabled="!newReserva.guia || !newReserva.jornada"><i class="material-icons mi-vam">add</i> Nueva Reserva</button>
+	</div>
+	<div class="btn-toobar d-md-none" role="group">
+		<button class="btn text-white" type="button" title="Actualizar" ng-click="load(false)"><i class="material-icons">refresh</i></button>
+		<button class="btn text-white" type="button" title="Nuevo"      ng-click="addReserva()" ng-disabled="!newReserva.guia || !newReserva.jornada"><i class="material-icons">add</i></button>
+		<button class="btn text-white" type="button" title="Arriba"     ng-click="goToTop()"><i class="material-icons">arrow_upward</i></button>
+	</div>
+</nav>

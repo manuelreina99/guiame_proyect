@@ -1,0 +1,35 @@
+{
+  "name": "guiame",
+  "version": "0.0.1",
+  "description": "guiame app",
+  "engines": {
+    "node": "12.x"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "7.x",
+    "bcrypt-node": "^0.1.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "json2csv": "^3.7.2",
+    "jsonwebtoken": "^8.5.1",
+    "pdfmake": "^0.1.72",
+    "pg": "6.x",
+    "pg-transact": "^1.0.1",
+    "web-push": "^3.4.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yosoyoscar/guiame.git"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],
+  "license": "MIT"
+}

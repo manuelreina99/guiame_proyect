@@ -1,0 +1,284 @@
+<!-- Header con información básica -->
+<nav class="navbar pb-0 bg-white">
+	<small>
+		<span>
+			<span ng-if="!grupo.idgrupo">NUEVO {{title}}</span>
+			<span ng-if="grupo.idgrupo">{{title}} {{grupo.idgrupo}}</span>
+			<span class="spinner-border spinner-border-sm" ng-if="loading.progress" style="vertical-align: unset;"></span>
+			<span class="badge badge-pill badge-success" ng-if="loading.ok" style="padding: .05em .2em;">
+				<i class="material-icons" style="font-size: 12px;">done</i>
+			</span>
+		</span>
+	</small>
+	<i class="material-icons text-danger blink_me" ng-if="grupo.observacionimportante" style="font-size: 2rem; cursor: pointer;" ng-click="goToObservaciones()">warning</i>
+</nav>
+
+<div class="alert alert-danger alert-dismissible fade show" role="alert" ng-if="formGrupo.$invalid && formGrupo.$dirty">
+  Por favor, revisa los siguientes datos:
+  <span ng-repeat="item in formGrupo.$error.required">{{item.$name}} </span>
+  <span ng-repeat="item in formGrupo.$error.date">{{item.$name}} </span>
+  <span ng-repeat="item in formGrupo.$error.time">{{item.$name}} </span>
+</div>
+
+<div class="alert alert-warning alert-dismissible fade show" role="alert" ng-if="info.textMonumento || info.textGuia">
+  <span ng-if="info.textMonumento">{{info.textMonumento}}</span>
+  <br ng-if="info.textMonumento && info.textGuia"/>
+  <span ng-if="info.textGuia">{{info.textGuia}}</span>
+</div>
+
+<div class="alert alert-info alert-dismissible fade show" role="alert" ng-if="grupo.repiteMessage">
+	{{grupo.repiteMessage}}
+</div>
+
+<form name="formGrupo" class="angularForm" ng-pristine="formDirty">
+	<div class="row">
+		<div class="form-group col-md-2 col-6">
+			<label>Fecha</label>
+			<input type="date" class="form-control" placeholder="Fecha" name="fecha" ng-model="grupo.fechahora" ng-change="checkMonumentos(); checkGuia(); getGuiasAsignables()" required>
+		</div>
+		<div class="form-group col-md-2 col-6">
+			<label>Hora</label>
+			<input type="time" class="form-control" placeholder="Hora" name="hora" ng-model="grupo.fechahora" ng-change="checkMonumentos()">
+		</div>
+		<div class="form-group col-md-4 col-6">
+			<label>Agencia</label>
+			<label class="d-md-none">
+				<span class="ml-3">&nbsp;&nbsp;&nbsp;</span>
+				<span class="ml-3" style="cursor: pointer;" ng-click="showSelectCodigoDialog('agencia')">
+					<i class="material-icons" style="font-size: 15px; vertical-align: middle;">keyboard</i>
+				</span>
+			</label>
+			<select class="form-control" ng-model="grupo.agencia" ng-change="loadDatosAgencia()" name="agencia" required>
+				<option ng-repeat="item in pdus  | filter: { tabla : 'agencia' }:true " value="{{item.codigo}}" ng-selected="{{item.codigo == grupo.agencia}}">{{item.nombre}}</option>
+			</select>
+		</div>
+		<div class="form-group col-md-4 col-6">
+			<label>Referencia</label>
+			<input type="text" class="form-control" placeholder="Referencia" ng-model="grupo.ref">
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="form-group col-6 col-md-4">
+			<label>Guía Local <span class="ml-3" style="cursor: pointer;" ng-click="showNewCodigoDialog('guia')">+</span></label>
+			<div class="input-group">
+				<div class="input-group-prepend" ng-click="grupo.guialocal = ''; formGrupo.$setDirty()" style="cursor: pointer;">
+					<span class="input-group-text"><i class="material-icons">close</i></span>
+				</div>
+				<select class="form-control" ng-model="grupo.guialocal" name="guia" ng-change="checkGuia()">
+					<option ng-repeat="item in pdus | filter: { tabla : 'guia' }:true " value="{{item.codigo}}"
+							ng-selected="{{item.codigo == grupo.guialocal}}"
+							ng-style="item.reservado ? { 'background-color':'antiquewhite' } : { 'background-color':'white' }">
+						{{item.codigo}}-{{item.nombre}} {{ item.reservado ? '[' + item.jornada + ']' : '' }}
+					</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group col-6 col-md-2">
+			<label>Pax</label>
+			<input type="number" step="1" class="form-control" placeholder="Pax" ng-model="grupo.pax" name="pax" required>
+		</div>
+		<div class="form-group col-6 col-md-4">
+			<label class="d-none d-md-block">Punto de Encuentro <span class="ml-3" style="cursor: pointer;" ng-click="showNewCodigoDialog('puntoencuentro')">+</span></label>
+			<label class="d-md-none">Pto Enc.
+				<span class="ml-3" style="cursor: pointer;" ng-click="showNewCodigoDialog('puntoencuentro')">+</span>
+				<span class="ml-3" style="cursor: pointer;" ng-click="showSelectCodigoDialog('puntoencuentro')">
+					<i class="material-icons" style="font-size: 15px; vertical-align: middle;">keyboard</i>
+				</span>
+			</label>
+			<select class="form-control" ng-model="grupo.puntoencuentro" name="puntoencuentro">
+				<option ng-repeat="item in pdus  | filter:'puntoencuentro'" value="{{item.codigo}}" ng-selected="{{item.codigo == grupo.puntoencuentro}}">{{item.nombre}}</option>
+			</select>
+		</div>
+		<div class="col-6 col-md-2">
+			<div class="custom-control custom-switch col-6 col-md-2">
+				<input type="checkbox" class="custom-control-input" id="switchConfirmado" ng-model="grupo.confirmado">
+				<label class="custom-control-label" for="switchConfirmado">Confirmado</label>
+			</div>
+			<div class="custom-control custom-switch col-6 col-md-2">
+				<input type="checkbox" class="custom-control-input" id="switchAnulado" ng-model="grupo.anulado">
+				<label class="custom-control-label mt-4" for="switchAnulado">Anulado</label>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="form-group col-6 col-md-4">
+			<label>Idiomas <strong>{{ grupo.idiomas.join('+') }}</strong></label>
+			<select multiple class="form-control" ng-model="grupo.idiomas" ng-change="checkGuia()">
+				<option ng-repeat="item in pdus  | filter: { tabla : 'idioma' }:true" value="{{item.codigo}}" ng-selected="{{item.codigo == grupo.idiomas}}">{{item.nombre}}</option>
+			</select>
+		</div>
+		<div class="form-group col-6 col-md-4">
+			<label class="d-none d-md-block">Monumentos <strong>{{ grupo.monumentos.join('+') }}</strong></label>
+			<label class="d-md-none">Monum. <strong>{{ grupo.monumentos.join('+') }}</strong></label>
+			<select multiple class="form-control" ng-model="grupo.monumentos" ng-change="checkMonumentos()">
+				<option ng-repeat="item in pdus  | filter:'monumento'" value="{{item.codigo}}" ng-selected="{{item.codigo == grupo.monumentos}}">{{item.nombre}}</option>
+			</select>
+		</div>
+		<div class="form-group col-12 col-md-4">
+			<label>
+				Tipo de Visita
+				<strong ng-if="grupo.tipovisita.length > 1">{{ grupo.tipovisita.join('+') }}</strong>
+				<strong
+					ng-if="grupo.tipovisita.length == 1" value="textopersonalizado"
+					ng-repeat="item in pdus | filter: {tabla: 'tipovisita', codigo: grupo.tipovisita[0]}:true">
+					{{item.nombre}}
+				</strong>
+			</label>
+			<select multiple class="form-control" ng-model="grupo.tipovisita">
+				<option ng-repeat="item in pdus | filter:'tipovisita'" value="{{item.codigo}}" ng-selected="{{item.codigo == grupo.tipovisita}}">{{item.nombre}}</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="form-group col-6 col-md-2">
+			<label>Hora Fin</label>
+			<input type="time" class="form-control" placeholder="Hora Final" name="horafinal" ng-model="grupo.horafinal" ng-change="checkMonumentos()">
+		</div>
+		<div class="form-group col-6 col-md-2">
+			<label class="d-none d-md-block">Lugar Finalización <span class="ml-3" style="cursor: pointer;" ng-click="showNewCodigoDialog('puntoencuentro')">+</span></label>
+			<label class="d-md-none">Pto. Fin <span class="ml-3" style="cursor: pointer;" ng-click="showNewCodigoDialog('puntoencuentro')">+</span></label>
+			<select class="form-control" ng-model="grupo.puntofinal" name="puntofinal">
+				<option ng-repeat="item in pdus  | filter:'puntoencuentro'" value="{{item.codigo}}" ng-selected="{{item.codigo == grupo.puntofinal}}">{{item.nombre}}</option>
+			</select>
+		</div>
+		<div class="custom-control custom-switch grupo-custom-switch col-6 col-md-2">
+			<input type="checkbox" class="custom-control-input" id="switchEntradasIncluidas" ng-model="grupo.entradasincluidas">
+			<label class="custom-control-label d-none d-md-block" for="switchEntradasIncluidas">Entradas Incluídas</label>
+			<label class="custom-control-label d-md-none" for="switchEntradasIncluidas">Ent. Incl.</label>
+		</div>
+		<div class="custom-control custom-switch grupo-custom-switch col-6 col-md-2">
+			<input type="checkbox" class="custom-control-input" id="switchRepite" ng-model="grupo.repite" ng-change="repiteChange()">
+			<label class="custom-control-label" for="switchRepite">Repite</label>
+		</div>
+		<div class="form-group col-6 col-md-2">
+			<label>Fecha Repite</label>
+			<input type="date" class="form-control" placeholder="Fecha" ng-model="grupo.repitefecha" name="repitefecha" ng-disabled="!grupo.repite">
+		</div>
+		<div class="custom-control custom-switch grupo-custom-switch col-6 col-md-2">
+			<input type="checkbox" class="custom-control-input" id="switchDiaCompleto" ng-model="grupo.repitecompleto" ng-change="repiteCompletoChange()">
+			<label class="custom-control-label" for="switchDiaCompleto">Día Completo</label>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="form-group col-6 col-md">
+			<label class="d-none d-md-block">Empresa Autobuses <span class="ml-3" style="cursor: pointer;" ng-click="showNewCodigoDialog('busempresa')">+</span></label>
+			<label class="d-md-none">Emp. Bus <span class="ml-3" style="cursor: pointer;" ng-click="showNewCodigoDialog('busempresa')">+</span></label>
+			<select class="form-control" ng-model="grupo.busempresa" name="busempresa">
+				<option ng-repeat="item in pdus  | filter:'busempresa'" value="{{item.codigo}}" ng-selected="{{item.codigo == grupo.busempresa}}">{{item.nombre}}</option>
+			</select>
+		</div>
+		<div class="form-group col-6 col-md">
+			<label>Datos Autobús</label>
+			<input type="text" class="form-control" placeholder="Datos Autobús" ng-model="grupo.busdatos">
+		</div>
+		<div class="form-group col-6 col-md">
+			<label class="d-none d-md-block">Teléfono de Contacto</label>
+			<label class="d-md-none">Fono Contacto</label>
+			<input type="text" class="form-control" placeholder="Teléfono" ng-model="grupo.telefono">
+		</div>
+		<div class="form-group col-6 col-md">
+			<label>Facilita Grupo <span class="ml-3" style="cursor: pointer;" ng-click="showNewCodigoDialog('facilitagrupo')">+</span></label>
+			<select class="form-control" ng-model="grupo.facilitagrupo" name="facilitagrupo">
+				<option ng-repeat="item in pdus  | filter:'facilitagrupo'" value="{{item.codigo}}" ng-selected="{{item.codigo == grupo.facilitagrupo}}">{{item.nombre}}</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="form-group col-6 col-md">
+			<label>Guía Correo <span class="ml-3" style="cursor: pointer;" ng-click="showNewCodigoDialog('guiacorreo')">+</span></label>
+			<select class="form-control" ng-model="grupo.guiacorreo" name="guiacorreo">
+				<option ng-repeat="item in pdus  | filter:'guiacorreo'" value="{{item.codigo}}" ng-selected="{{item.codigo == grupo.guiacorreo}}">{{item.nombre}}</option>
+			</select>
+		</div>
+		<div class="form-group col-6 col-md">
+			<label>Forma de Pago</label>
+			<select class="form-control" ng-model="grupo.formapago" name="formapago" required>
+				<option ng-repeat="item in pdus  | filter:'formapago'" value="{{item.codigo}}" ng-selected="{{item.codigo == grupo.formapago}}">{{item.nombre}}</option>
+			</select>
+		</div>
+		<div class="form-group col-6 col-md">
+			<label>Tipo de Factura</label>
+			<select class="form-control" ng-model="grupo.tipofactura">
+				<option ng-repeat="item in pdus  | filter:'tipofactura'" value="{{item.codigo}}" ng-selected="{{item.codigo == grupo.tipofactura}}">{{item.nombre}}</option>
+			</select>
+		</div>
+		<div class="form-group col-6 col-md">
+			<label>Cantidad Convenida</label>
+			<input type="number" class="form-control" placeholder="Cantidad Convenida" name="cantidadconvenida" ng-model="grupo.importe" required>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="form-group col">
+			<label>
+				<span class="d-inline">Observaciones</span>
+				<div class="custom-control custom-switch d-inline ml-1">
+					<input type="checkbox" class="custom-control-input" id="switchObsImp" ng-model="grupo.observacionimportante">
+					<label class="custom-control-label" for="switchObsImp">Importante</label>
+				</div>
+			</label>
+			<textarea class="form-control" rows="3" id="observaciones" ng-model="grupo.observaciones"></textarea>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col" ng-if="grupo.facturas.length > 0">
+			Facturado en:
+			<a ng-repeat="factura in grupo.facturas" ui-sref="app.factura({id: factura.id})"><span ng-if="$index>0"> , </span>{{factura.factura}}</a>
+		</div>
+		<div class="col">
+			<p class="text-right">Grupo modificado por {{grupo.modusuarionombre | uppercase}} el {{grupo.fechamodificacion | date:'medium'}}</p>
+		</div>
+	</div>
+	
+</form>
+
+<p class="mt-4">&nbsp;</p>
+
+<!-- Footer con botones -->
+<nav class="navbar navbar-mobile fixed-bottom d-flex justify-content-around justify-content-md-end">
+	<div class="btn-toobar d-none d-md-block" role="group">
+		<div class="btn-group dropup">
+			<button class="btn btn-outline-light text-white" type="button" title="Más Opciones" data-toggle="dropdown"><i class="material-icons mi-vam">more_vert</i> Más</button>
+			<div class="dropdown-menu" style="background-color: black;">
+				<button class="btn text-white" type="button" title="Borrar"   ng-disabled="!grupo.idgrupo || currentUser.rol < 9" ng-click="deleteGrupo()"><i class="material-icons mi-vam">delete</i> Borrar</button>
+				<button class="btn text-white" type="button" title="Clonar"   ng-disabled="!grupo.idgrupo" ng-click="clonarGrupo()"><i class="material-icons mi-vam">file_copy</i> Clonar</button>
+			</div>
+		</div>
+			<button class="btn btn-outline-light text-white" type="button" title="Imprimir" ng-disabled="!grupo.idgrupo" ng-click="print()"><i class="material-icons mi-vam">print</i> Imprimir</button>
+			<button class="btn btn-outline-light text-white" type="button" title="Facturar" ng-click="facturarGrupo()"
+				ng-disabled="!grupo.idgrupo"
+				ng-if="!grupo.fechahora || (grupo.fechahora && grupo.fechahora.getFullYear() <= 2022)">
+					<i class="material-icons mi-vam">receipt_long</i> Facturar
+			</button>
+	    <button class="btn btn-outline-light text-white" type="button" title="Notificar Guía"    ng-disabled="!grupo.idgrupo || !grupo.guialocal" ng-click="notificarGuia()"><i class="material-icons mi-vam">campaign</i> Notificar Guía</button>
+	    <button class="btn btn-outline-light text-white" type="button" title="Descartar Cambios" ng-disabled="!formGrupo.$dirty" ng-click="descartarCambios()"><i class="material-icons mi-vam">arrow_back</i> Descartar Cambios</button>
+	    <button class="btn btn-outline-light text-white" type="button" title="Guardar"    ng-click="saveGrupo()"><i class="material-icons mi-vam">save</i> Guardar</button>
+	    <button class="btn btn-outline-light text-white" type="button" title="Arriba"     ng-click="goToTop()"><i class="material-icons mi-vam">arrow_upward</i> Arriba</button>
+	</div>
+
+	<div class="btn-toobar d-md-none" role="group">
+		<div class="btn-group dropup">
+			<button class="btn text-white" type="button" title="Más Opciones" data-toggle="dropdown"><i class="material-icons">more_vert</i></button>
+			<div class="dropdown-menu" style="background-color: black;">
+				<button class="btn text-white" type="button" title="Borrar"   ng-disabled="!grupo.idgrupo || currentUser.rol < 9" ng-click="deleteGrupo()"><i class="material-icons mi-vam">delete</i> Borrar</button>
+				<button class="btn text-white" type="button" title="Clonar"   ng-disabled="!grupo.idgrupo" ng-click="clonarGrupo()"><i class="material-icons mi-vam">file_copy</i> Clonar</button>
+				<button class="btn text-white" type="button" title="Imprimir" ng-disabled="!grupo.idgrupo" ng-click="print()"><i class="material-icons mi-vam">print</i> Imprimir</button>
+				<button class="btn text-white" type="button" title="Facturar" ng-click="facturarGrupo()"
+					ng-disabled="!grupo.idgrupo"
+					ng-if="!grupo.fechahora || (grupo.fechahora && grupo.fechahora.getFullYear() <= 2022)">
+						<i class="material-icons mi-vam">receipt_long</i> Facturar
+				</button>
+			</div>
+		</div>
+		<button class="btn text-white"           type="button" title="Notificar Guía"    ng-disabled="!grupo.idgrupo || !grupo.guialocal" ng-click="notificarGuia()"><i class="material-icons">campaign</i></button>
+		<button class="btn text-white"           type="button" title="Descartar Cambios" ng-disabled="!formGrupo.$dirty" ng-click="descartarCambios()"><i class="material-icons">arrow_back</i></button>
+		<button class="btn text-white"           type="button" title="Guardar"                                           ng-click="saveGrupo()"><i class="material-icons">save</i></button>
+		<button class="btn text-white d-md-none" type="button" title="Arriba"                                            ng-click="goToTop()"><i class="material-icons">arrow_upward</i></button>
+	</div>
+</nav>
