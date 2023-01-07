@@ -3,13 +3,13 @@
 Aplicación de gestión de grupos y guías turísticos
 
 Frontend:
-* Angular.js
+* AngularJS
 * Bootstrap
 
 Backend:
 * Node.js
 * Express
-* PostgreSql
+* PostgreSQL
 
 Instalación y puesta en funcionamiento:
 1. crear bbdd guiame en postgresql con [/sql/guiame.sql](/sql/guiame.sql), este script crea la bbdd e inserta algunos datos de prueba
